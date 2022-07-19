@@ -2176,12 +2176,13 @@ export default Button;
                                             -- So the 'useEffect' first argument function, will only run 'ONCE' when the app startsup for the first time. And thats it. --
                                                                 (ie: ' useEffect(() => { console.log("This will only run once") }, [] '))
                                             
-                                          👆 USED WHEN --> we want some code to run only 'ONCE' when the component starts-up for the first time. 👆
+                                          👆 USED WHEN --> we want some code to run only 'ONCE' when the component starts-up/mounts for the first time. 👆
                                                 
 
 
 
-                          - 🟡 If we do specify dependencies in the second argument, then the 'useEffect' hook first argument function will get executed everytime any of the specified dependencies                                    change. 
+                          - 🟡 If we do specify dependencies in the second argument, then the 'useEffect' hook first argument function will get executed everytime any of the specified dependencies change.
+                          
                                         Specified dependencies are ussually variables/states that are in the first argument function ("Side Effect" function). 
                                         No need to add these as dependencies --> 1. state updating function (ie: 'setFormIsValid')
                                                                                  2. Browser 'built-in' APIs or functions (ie: 'setTimout()')
@@ -3332,7 +3333,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 
 / We just wrap the function that we want to save/store with the 'useCallback()' Hook, as a FIRST argumment. Then in its SECOND argument it takes an array of depenedcies (same as 'useEffect'). 
          - If array of depenedcies is EMPTY, it means that the function will never change. And so it will never need to be re-stored by react.
-         - If dependencies ARE specified then that means that the function will change whenever a dependency value changes, and thus react will need to recreate and store that new function in its storage inorder use it since            it depends on the changed depenendency.            / `⭐⭐ IMPORTANT -> Dependencies are external variables that is no inside the hook.`
+         - If dependencies ARE specified then that means that the function will change whenever a dependency value changes, and thus react will need to recreate and store that new function in its storage inorder use it since            it depends on the changed depenendency.            / `⭐⭐ IMPORTANT -> Dependencies are external variables that are NOT inside the hook.`
 
       // -- no dependencies
               const [showParagraph, setShowParagraph] = useState(false);
@@ -4292,7 +4293,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             Instead, inorder to manipulate data in the store, we can use a concept called 'Reducers'. Where we setup a 'Reducer function'.
                 🌟 This 'Reducer function', is then responsible for 'mutating/changing the Store data'. 
                 
-                📝 'Reducer function' is 🛑 NOT the 'useReducer' hook 🛑.  It is a GENERAL programming concept which takes some input, transforms that input/reduce it, and then spit out a new output/result.
+                📝 'Reducer function' is 🛑 NOT the 'useReducer' hook 🛑.  It is a GENERAL programming concept which takes some input, transforms that input/reduce it, and then spit out a new output/result. 
+                    The 'Reducer function' is a PURE function. EXPLAINED below 👇👇
                 
                    -------- `What is a 'Reducer function'?` ---------   
                〰 A 'Reducer function' is a standard JavaScript funciton which will be called by the 'Redux' library. 
@@ -4305,28 +4307,27 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                                                                               So we must not send an 'HTTP request', save something in 'Local Storage', fetch something from 'Local Storage', etc...
                                       Instead a 'Reducer' should just be a function that takes given inputs provided by Redux, and then produces the expected output, which is a new state object.
                                       
-                  // example -> 
                                         
                                                                                                                                                        
              
-                            
-                                        
+                              
         💨 `  CONNECTING components and 'Reducer functions' to manipulate/change data (state) inside the 'Central Data (state) Store'  ` 👇👇   
         
               - Ultimately, components will be the one to 'TRIGGER' data change in the store, through 'Reducer functions'.
                         Like a click on a button that triggers data change in the store.
                         
               - Inorder for comoponents to 'TRIGGER' data change in the store, they dispatch/trigger 'ACTIONS'.
-                  An 'Action' is a simple JavaScript Object which desribes the kind of operation that the 'Reducer function' should perform.
+                  An 'Action' is a simple JavaScript Object which desribes the KIND of operation that the 'Reducer function' should perform.
              
               After an action is dispatched/triggered by a component   ->   Redux forwards that 'Action' to the 'Reducer function'   ->   Then the 'Reducer function' executes the oparation described in the 'Action' which the manipulates data (state) inside the 'store'.
       
-      In short -->  Components dispatches 'Actions' which describe what should be done -> then these 'Actions' are forwarded to the 'Reducer function' -> 'Reducer function' then performs the 'Action' and spits out new 'state' which will replace an exisiting 'state' in the 'Central Data (state) Store'.
+      ⭐ In short -->  Components dispatches 'Actions' which describe what should be done   ->   then these 'Actions' are forwarded to the 'Reducer function'   ->   'Reducer function' then performs the 'Action' and spits out a new 'state' which will replace an exisiting 'state' in the 'Central Data (state) Store'.
       
       When that state in the 'Central Data (state) Store' is updated, subscribed components get notified so that they can update their UI.
       
       
   // ----------------------------------------------------------------
+      ⭐⭐⭐⭐  SUMMARY  ⭐⭐⭐⭐
       How Redux works SUMMARY --> 1. Every app has a single 'Store' which stores states
                                   2. Different components in the app can 'SUBSCRIBE' to the store to access these states, and get notified whenever a state changes
                                   3. Components cannot directly change data/states inside the 'store', but can indirectly change data/states in the store through 'Reducer functions'.
@@ -4357,18 +4358,12 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         // Default Node.js import syntax for importing a third-party package
         const redux = require("redux");
 
-        
-        / --- 1. Create the store
-        // 'createStore()' is method exposed by redux library, which creates a store.
-        // The store should manage some data, that data is determined by the 'Reducer function'. Because it is the reducer function that will produce new state snapshots, whenever an 'action' is dispatched.
-        // When we run the code for the first time, the 'Reducer function' will be executed with a default 'action' that should spit out the initial state.
-        // We pass in the 'Reducer function' as a parameter inside the 'createStore()' function. Because the store needs to know which 'Reducer function' is responsible for changing that store. Because its the 'Reducer'            that works together with the store.
-        const store = redux.createStore(counterReducer);
-                   
+                                 
+                                 
                                  
         / --- 2. Add a 'Reducer function'
-        // ⭐ When 'store' is initialized, 'Redux' will execute the passed in 'Reducer function' inside 'createStore()' method, for the first time. So if we dont specify a default or initialValue to our state, it will be               'undefined' which will result in an error.
-        // ⭐ So We need to define a default value to the 'state' parameter, so that it is not 'undefined' when we the 'store' is initialized. The defaultValue will ONLY be used when the state would otherwise be                       'undefined'.
+        // ⭐ When 'store' is initialized, 'Redux' will EXECUTE the passed in 'Reducer function' inside 'createStore()' method, for the first time. So if we dont specify a default or initialValue to our state, it will be               'undefined' which will result in an ERROR.
+        // ⭐ So We need to define a default value to the 'state' parameter, so that it is not 'undefined' when the 'store' is initialized. The defaultValue will ONLY be used when the state would otherwise be                       'undefined'.
         const counterReducer = (state = { counter: 0 }, action) => {
           if (action.type === "increment") {
             return {
@@ -4382,11 +4377,22 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             };
           }
 
-          // return the unchanged/default state upon initialization. ie: ' { counter: 0 } '
+          // return the unchanged/default state upon initialization AND if none of the 'if' statements meet.   ie: ' { counter: 0 } '
           return state;
         };
-
+        
                                  
+                                 
+        / --- 1. Create the store
+        // - 'createStore()' is method exposed by redux library, which creates a store.
+        // - The store should manage some data, that data is determined by the 'Reducer function'. Because it is the reducer function that will produce new state snapshots, whenever an 'action' is dispatched.
+        // - When we run the code for the first time, the 'Reducer function' will be executed with a default 'action' that should spit out the initial state.
+        // - We PASS in the 'Reducer function' as a parameter inside the 'createStore()' function. Because the store needs to know which 'Reducer function' is responsible for changing that store. Because its the 'Reducer'            that works together with the store.
+        const store = redux.createStore(counterReducer);
+        
+       // -- Initial state --
+       / console.log(store.getState());                       
+                                        
         / --- 3. Create a Subscriber function which gets the latest state     ->  using 'getState()' method.     This will be our component in a React App.
         // 'getState()' is a method available on the 'store'. It will give us the latest state snapshot AFTER it was updated.
         const counterSubscriber = () => {
@@ -4395,7 +4401,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         };
 
                                  
-        / --- 4. Make Redux aware of the subscriber function, and tell REDUX to execute it whenever our state changes     ->   using the 'subscribe()' method 👇
+        / --- 4. Make Redux aware of the subscriber function, and tell REDUX to **EXECUTE** the 'counterSubscriber()' function whenever our data/state in the store changes     ->    using the 'subscribe()' method 👇
         // 'subscribe()' is a method available on the 'store'. Which expects a function as an argument which REDUX will execute whenever the data in the store changes.
         store.subscribe(counterSubscriber);
 
@@ -4410,6 +4416,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                  
         // --------------------------------
         // run 'node redux-demo.js' to execute code in terminal
+                                 // OR use 'Qoukka' VSC extension
         // --------------------------------
 
 
@@ -5330,7 +5337,9 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                 
                 So 'replace' is like 'redirect' where we change the current page, whereas 'push' adds a NEW page.
 
-                   🌟🌟 use 'push' to implement prgrammatic navigation with React Router.
+                              🌟 use 'push' to implement programmatic navigation with React Router.
+                   
+                  ⭐⭐⭐  when we use 'push' method on 'useHistory' hook -> the component get RE-RENDERED   ⭐⭐⭐ 
                    
 
       // ----- example -----
@@ -5355,6 +5364,10 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                   };
 
                   export default NewQuotePage;
+                                                        
+                             
+                             
+                             
                              
                              
                              
@@ -5461,18 +5474,492 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 ``
 // ----------------------------------------------------------------------------------------------------------------
 // -----------------------------------------------------------------
-/ `    ` 
+/ `  Query paramaters  ` 
 
+
+  - Query parameters are a defined set of parameters attached to the end of a url. 
+          They are extensions of the URL that are used to help define specific content or actions based on the data being passed.
+          
+  - Query parameters start with a question mark '?' and then folowed by parameter pairs 'sort=ascending' which pass extra data into the page that was loaded. ie: 'https.://www/domain.com/page?sort=ascending'
+                        
+                                                        query string begins from '?' mark
+                                                              👇    variable value 
+                                                              👇       👇 
+                             ie: ' https.://www/domain.com/page?key1=value1&key2=value2 '
+                                                                 👆        👆
+                                                            Variable name  👆
+                                                                           seperator '&'
+
+
+  -- ⭐⭐ Difference between 'Query paramaters' ('?sort=ascending')   &&   'Regular Route paramaters' ('/page/:quoteId') is that  -->  
+                      - 'Regular paramaters' are MANDATORY. Where pages specified in the <'Route/>' component are ONLY rendered when the Route MATCHES. 
+                      - whereas 'Query paramaters' are optional. The '?' does not change the Route matching and has no impact on which Route is matched. 
+                              But if a Route is matched then the loaded page would have access to the 'Query paramater' data, to for instance change the behavior of the page that was loaded.
+                                  like sorting a list on a page by ascending or descending order.
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  'useLocation' Hook   ` 
                              
+
+    - The 'useLocation' hook returns the location object which has information about the URL of the currently loaded page. 
+    
+       
+    
+    
+    
+// SIDE NOTE: 
+    
+    - We can use the built-in JavaScript 'URLSearchParams()' constructor function on Query Parameters, which we get using 'useLocation' hook,
+            which will return an object that containg key/value pairs of the query paramater key and its value.
             
-                   
-                    
-                
-                
-                
+            
+    - We can the use the 'get()' method on the returned Object and pass in the key of the Query parameter, which gives us its value.
+            
+               
+    
+              import { useHistory, useLocation } from "react-router-dom";             👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+              import QuoteItem from "../QuoteItem/QuoteItem";
+              import { QuotesList, Sorting, ButtonSort } from "./QuoteListStyles";
+
+              const QuoteList = (props) => {
+                const history = useHistory();
+                const location = useLocation();                     👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                // -- check whether list is in 'ascending' or 'descending' order, from the URL search query parameter
+                const queryParams = new URLSearchParams(location.search);                                👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                const isSortAscending = queryParams.get("sort") === "ascending" ? true : false;            👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                // -- sort List
+                let quotes = props.quotes;
+
+                if (isSortAscending) {
+                  quotes = props.quotes.sort((quoteA, quoteB) => {
+                    if (quoteA.id > quoteB.id) return 1;
+                    if (quoteA.id < quoteB.id) return -1;
+                  });
+
+                  console.log(quotes);
+                } else {
+                  quotes = props.quotes.sort((quoteA, quoteB) => {
+                    if (quoteA.id > quoteB.id) return -1;
+                    if (quoteA.id < quoteB.id) return 1;
+                  });
+                  console.log(quotes);
+                }
+
+                // -- change URL search query param to 'ascending' or 'descending'
+                const changeSortHandler = () => {
+                  history.push( `${location.pathname}?sort=${isSortAscending ? "descending" : "ascending"}`) };               👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                return (
+                  <>
+                    <Sorting>
+                      <ButtonSort onClick={changeSortHandler}>
+                        Sort {isSortAscending ? "Descending" : "Ascending"}
+                      </ButtonSort>
+                    </Sorting>
+
+                    <QuotesList>
+                      {quotes.map((quote) => (
+                        <QuoteItem
+                          key={quote.id}
+                          id={quote.id}
+                          author={quote.author}
+                          text={quote.text}
+                        />
+                      ))}
+                    </QuotesList>
+                  </>
+                );
+              };
+
+              export default QuoteList;
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  'useRouteMatch' Hook   `
+
+
+    - The 'useRouteMatch' hook, similar to 'useLocation' hook but has more information anout the currently loaded Route.
+    
+    - We can use the 'useRouteMatch' hook to get the path defined by US and not just the one in the URL.    ie: dynamic path defined by us  -->  'quotes/:quoteId'  
+                                                                                                                actual URL path             -->  'quotes/q3'
+
+
+    - ⭐⭐⭐⭐ Can be used to construct NESTED Route PATHS dynamically.     A primary use case FOR 'useRouteMatch' hook would be to construct nested paths.
+                                👇👇👇
+    ie:     ' <Route path={`${match.path}/comments`} exact>       
+                <Comments />
+              </Route> '
+
+
+
+
+
+// ----------------------
+/ ` Difference between 'useRouteMatch' hook and 'useLocation' hook `
+    
+    'useLocation' hook
+
+    Provides access to the location prop in React Router.
+
+    It is similar to 'window.location' in the browser itself, but this is accessible everywhere as it represents the Router state and location.
+
+    A primary use case for this would be to access the 'query params', ie: '?sort=ascending',  or the complete route string through 'pathname' property.
+
+    ------
+
+    'useRouteMatch' hook
+
+    Provides access to the match object.
+
+    If it is provided with no arguments, it returns the closest match in the component or its parents.
+
+    A primary use case would be to construct nested paths.
+
+
+
+   ⭐ SO, - 'location.pathname' gives the URL of the current page, 
+          - while 'match.url' gives the path you gave to the '<Route>' that is rendering the page.
+
+   
+        
+
                                  
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  React Router v6   `
+
+    'npm i react-router-dom@latest'
+
+
+    - check 'React-Router-basics-v6' project and video 
+                 https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/29303718?start=1305#questions
+
+
+- New key features from 'React-Router-v5' to 'React-Router-v6'
+
+      ---------------------
+    1. instead of '<switch>' component in 'React-Router-v5', which wraps our '<Route>' components to make sure that only one '<Route>' is loaded at the same time
+                -> ⭐  we use '<Routes>' in 'React-Router-v6'
+
+
+      ---------------------
+    2. instead of defining '<Route>' like this in 'React-Router-v5'  👇
+              (having the component that should be rendered when the route 'path' matches, as a CHILD of '<Route>')
+          
+            ⛔  <Switch>
+                  <Route path='/welcome'>                                            <-- 'React-Router-v5'
+                    <Welcome />
+                  </Route>
+                  <Route path='/products' exact>
+                    <Products />
+                  </Route>
+                  <Route path='/products/:productId'>
+                    <ProductDetail />
+                  </Route>
+                </Switch>
+      
+
+        -> ⭐  we use 'element' prop in 'React-Router-v6' to pass in the component element that should be rendered if the route 'path' matches as *JSX* 
+                      ie: 
+
+           🟢  <Routes>                                                                                   
+                  <Route path="/welcome" element={<Welcome />} />                                        <-- 'React-Router-v6'       
+                  <Route path="/products" exact element={<Products />} />
+                  <Route path="/products/:productId" element={<ProductDetail />} />
+               </Routes>
                                  
+                                                                                   
+              
+                      
+      ---------------------                  
+    3. Dynamic path paramters did NOT change in 'React-Router-v6'
+                                            👇👇
+              ie: <Route path='/products/:productId'>                     -> 'React-Router-v5'
+                    <ProductDetail />
+                  </Route>
+
+
+               '<Route path='/products/:productId' element={<ProductDetail/>} />'            -> 'React-Router-v6'
+                                         👆👆👆
+                      
+  
+      ---------------------
+    4. In 'React-Router-v6' we no longer need the 'exact' keyword in the '<Route>' component.                                  👇👇
+                'React-Router-v6' now ALWAYS looks for exact matches if we define a 'path' like this     ->     '<Route path="/products" element={<Products />} /> '
+
+                🛑🛑 NEVER USED 🛑🛑
+      --  If we want the old behavior in 'React-Router-v5' where if we dont include the 'exact' prop, then multiple page components will be rendered at the same time if they start with the same path
+                        -> then we can use '*' at the end of the 'path' in 'React-Router-v6'             
+                        
+                        ie:  ' <Route path="/products/*" element={<Products />} /> '
+
+
+      ---------------------
+    5. Unlike in 'React-Router-v5', the order inwhich we specify '<Route>' components does NOT matter anymore in 'React-Router-v6'.
+                              'React-Router-v6' has a better algorithim that nows if we have a more specfic 'path' in one of our '<Route>' components, it will then match that Route and ignore the other '<Route>' paths                                       regardless of their ORDER, even if we use '*' on one of paths. If one is more specific than the others, then its the only one that will match.
+            
+            
+                              <Routes>
+                                <Route path="/welcome" element={<Welcome />} />                
+                                <Route path="/products/*" element={<Products />} />                               
+                                <Route path="/products/:productId" element={<ProductDetail />} />                           👈👈👈👈👈👈👈👈  This <Route> will match for this URL 'http://localhost:3000/products/p1'
+                              </Routes>                                                                                                               even tho the <Route> above it is using '*' AND id above it.
+
+
+      ---------------------
+   6. '<NavLink>' component now doesnt need the 'activeClassName' prop in 'React-Router-v6'. An 'active' class is autoimatically added to the navlink if the Route path matches its ' to="..." ' value.
+   
+            If we want to apply a specific class other than the default one 'active', when the NavLink is active, 
+                            then we would need to manually check if the NavLink is active through the 'className' props, using an arrow function like so 👇👇
+                ⭐⭐⭐ This arrow funtion will contain information about the NavLink and the current state of the naviagtion. We can access this info though argument in the arrow function.
+
+                                      👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
+        ie: ' <NavLink className={(navData) => (navData.isActive ? classes.active : "")} to="/welcome">
+                Welcome
+              </NavLink> '
+
+
+      ---------------------
+   7. In 'React-Router-v6', the '<Redirect>' component doesnt exist anymore.
+              Instead of '<Redirect>', now there is a '<Navigate>' component in 'React-Router-v6', which is used to redirect the user to a different path if a certain path is matched.
+              NOTE: we pass the '<Navigate>' component in the 'element={...}' prop. And also remember we dont need the 'exact' keyword in 'React-Router-v6'.
+              
+                
+              ie:    <Route path="/" element={<Navigate to="/welcome" />} />                    `  <-- DONT USE THIS 🛑 `
+
+  ⭐⭐  IMPORTANT: If we redirect the user like this 👆👆. Then we will 'PUSH' two pages on to the navigation stack, one for the 'path="/"' and one for the 'path="/welcome"' path when the user gets redirected. 
+            If we truly want to redirect the user and not clutter the navigation/history stack with unwanted paths, then we can 'REPLACE' the current page by using the 'replace' prop in the '<Navigate>' component.
+            
+              ie:    <Route path="/" element={<Navigate replace to="/welcome" />} />               ` <-- USE THIS 🟢 `
+              
+           
+              
+      ---------------------        
+    8. Nested routes syntax in 'React-Router-v6' is different from that in 'React-Router-v5'.
+    
+           - instead of passing the nested '<Route>' in a child component like this in 'React-Router-v5' 👇👇👇
+                
+                  // --- child component
+                    const Welcome = () => {
+                      return (
+                        <>
+                          <h1>The Welcome Page</h1>
+
+                          <Route path="/welcome/user-login" exact>    👈👈👈👈👈👈👈👈👈
+                            <p>This is a nested Route</p>                     👈👈👈👈👈👈👈👈👈
+                          </Route>                                          👈👈👈👈👈👈👈👈👈
+                        </>
+                      );
+                    };
+
+                    export default Welcome;
+
+
+                  // -----
+                       
+            - We need to use the '*' at the end of the parent Route ' <Route path="/welcome/*" element={<Welcome />} /> ', because we want the '<Welcome>' component to load WHENEVER our URL path starts with '/welcome',                  no matter whats comes after it, it will always be loaded when the path starts with '/welcome'.
+                We also want the nested Route component to load along with the parent route component. On the same page.
+                             Since in 'react-router-dom-v6' looks for exact match for the path, by default.
+
+            - Another change in 'react-router-dom-v6' nested routes is that nested routes are RELATIVE to their parent route, which means that we DONT need to repeat the parameter of the parent followed by the nested                    route parameter for the path, when creating nested routes. 
+                       So the component inside the nested route will only be active WHEN the component inside the PARENT route is active.
+                            So we dont need to use 'useMatch' or 'useLocation' etc.. to find the path of the parent for nested routes anymore.   
+                                                                                                  ie:  ->  ' <Link to={`${match.path}/new-user`} '    `Like we had to do in 'React-Router-v5'`
+                            
+                        ie: 
+                       ---- instead of this 👇  in 'react-router-dom-v5'  ----
+                          
+                           // ---- parent route
+                                <Switch>         👇👇
+                                  <Route path="/welcome">
+                                    <Welcome />
+                                  </Route>
+                                <Switch> 
+                          
+                          // ---- child route 
+                                        👇👇
+                          <Route path="welcome/user-login" exact>
+                            <p>Welcome, New User!</p>
+                          </Route>
+
+
+                                            ---- we now do this 👇 in 'react-router-dom-v6'  ----
+
+                                             // ---- parent route
+
+                                                  <Routes>         👇👇
+                                                    <Route path="/welcome/*" element={<Welcome />} />
+                                                  </Routes>
+
+                                            // ---- child route 
+
+                                              <Routes>          👇👇
+                                                <Route path="user-login" element={<p>This is a nested Route</p>} />
+                                              </Routes>
+                                                                                  
+                                                                                  
+                                                                                  
+                   ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐                   [👇 USE THIS 👇]                                        
+             - ⭐⭐⭐⭐  In 'React-Router-v6', we can now add nested Routes INSIDE parent routes '<Route/>', instead of having them in the child component / component where we want to load the nested route content.
+                                       USE THIS. Having all our route definitions in one place is alot better.
+                                                                                 
+                                                                                  
+              - 🌟🌟 If we use this pattern, we HAVE to tell React-router where the content inside the nested route 'element={...}' should be inserted into the dom, using the '<Outlet/>' component.
+                    '<Outlet/>' component will act as a placeholder, which tells react-router where nested route content should be inserted.                                                                
+                
+            
+                  ie:  
+                          // -- parent component --
+                                import { Route, Routes, Navigate } from "react-router-dom";
+
+                                function App() {
+                                  return (
+                                    <>
+                                      <MainHeader />
+
+                                      <main>
+                                        {/* '<Routes>' instead of '<Switch>' */}
+                                        <Routes>
+                                          <Route path="/" element={<Navigate replace to="/welcome" />} />
+
+                                          <Route path="/welcome/*" element={<Welcome />}>                        👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                            {/*   -- Nested Route 👇👇👇
+                                                  〰 content inside the nested route will be laoded when url path is  ' path="/welcome/new-user" ' 
+                                                  〰 HAVE to tell react-router where to insert the nested route content, inside the '<Welcome/>' component, if the route matches, by using the '<Outlet/>' component in the                                                     '<Welcome/>' component
+                                            */}
+                                            <Route path="user-login" element={<p>This is a nested Route.</p>} />                    👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                          </Route>
+
+                                          <Route path="/products" element={<Products />} />
+
+                                          <Route path="/products/:productId" element={<ProductDetail />} />
+                                        </Routes>
+                                      </main>
+                                    </>
+                                  );
+                                }
+                  
+                  
+                  
+                  
+                          // -- child component --
+                            import { Link, Outlet } from "react-router-dom";                👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                            const Welcome = () => {
+                              return (
+                                <>
+                                  <h1>The Welcome Page</h1>
+                                  <Link to="user-login">Login</Link>
+                                  <Outlet />         👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                </>
+                              );
+                            };
+
+                            export default Welcome;
+
+
+
+
+         ---------------------     
+           'useNavigate' hook
+    8. 'Imperative navigation'.   Some times we want to navigate when an action is finished, when a button was clicked, when an http request was sent, etc...
+    
+            --- In 'React-router-v5' we can do so by using the 'useHistory' hook along with the 'push()' or 'replace()' methods available on them. 
+                          ie: ' const history = useHistory(); '
+                              '  history.push(); '                    `  --> navigates user to a new page.  `
+                              
+                              
+            --- In 'React-router-v6'  'useHistory' hook does NOT EXIST anymore. Instead we can use the 'useNavigate' hook.    
+                          ie: ' const navigate = useNavigate(); '
+                              '  navigate('/welcome/new-user'); '                    `  --> navigates user to a the' /welcome/new-user ' path  `
+                              
+                If we want to redirect using the 'useNavigate' hook. We can do so
+                        ie:  const navigate = useNavigate();
+                             navigate('/welcome/new-user', {replace: true});   
+                                                                 👆👆👆        --> ` Will replace the new route with the old one. instead of pushing the old route to the navigation stack. ie: Will redirect the user  `
+                                                                 
+                                                                
+                We can also pass in a number inside the 'useNavigate' hook, for instance like '-1' to go the previous page, or '1' to go forward, or '3' to forward three time, etc...
+                        ie:  const navigate = useNavigate();
+                             navigate(-1);                                    --> ` goes back `
+                  
+                             
+           // --- example ---    
+                             
+            import { Link, Outlet, useNavigate } from "react-router-dom";
+
+            const Welcome = () => {
+              const navigate = useNavigate();
+
+              // -- Redirect user to new page
+              const redirectButtonHandler = () => {
+                navigate("/products", { replace: true });
+              };
+
+              // -- go back
+              const backButtonHandler = () => {
+                navigate(-1);
+              };
+
+              // -- go forward twice
+              const twiceForwardButtonHandler = () => {
+                navigate(2);
+              };
+
+              return (
+                <>
+                  <h1>The Welcome Page</h1>
+                  <Link to="user-login">Login</Link>
+                  <Outlet />
+
+                  {/* 👇 Imperative navigation with react-router-v6 👇 */}
+                  <div>
+                    <button type="button" onClick={redirectButtonHandler}>
+                      Redirect to different Route!
+                    </button>
+                  </div>
+
+                  <div>
+                    <button type="button" onClick={backButtonHandler}>
+                      Go Back
+                    </button>
+                  </div>
+
+                  <div>
+                    <button type="button" onClick={twiceForwardButtonHandler}>
+                      Go Forward TWICE
+                    </button>
+                  </div>
+                </>
+              );
+            };
+
+            export default Welcome;
+
+
+
+    ---------------------     
+    9. '<Prompt>' component does NOT exist in 'react-router-v6'. There is no replacement for it in 'react-router-v6'. Look for a work around.
+        
+            Stick to 'react-router-v5' is the app relies heavily on '<Prompt>' component.
+            
+                  
+        
+
+
+                        
                                  
+           
+
+
                                  
 
 / ==============================================================================================================================================================================================
