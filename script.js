@@ -963,7 +963,7 @@ const ExpenseForm = () => {
                     1. In React, 'Controlled' Components are those in which the form’s data is handled by the component’s state. 
                     2. An '<input>' form element whose value is controlled by React is called a 'Controlled' component.
                     3.  React handles 'Controlled' component form data through state ('useState' hook). It updates that state on every keystroke. And then feed that state back to the '<input>' form                           element, through the 'value' prop. So we can use 'setState' to reset the 'value' prop on an '<input>' element after submitting the form.
-                                         Hence, these '<input>' form elements are called 'Controlled' components becaus etheir internal state is controlled by React.
+                                         Hence, these '<input>' form elements are called 'Controlled' components because their internal state is controlled by React.
  
                             
      // ------- Example -------
@@ -4358,8 +4358,14 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         // Default Node.js import syntax for importing a third-party package
         const redux = require("redux");
 
-                                 
-                                 
+        
+        / --- 1. Create the store
+        // - 'createStore()' is method exposed by redux library, which creates a store.
+        // - The store should manage some data, that data is determined by the 'Reducer function'. Because it is the reducer function that will produce new state snapshots, whenever an 'action' is dispatched.
+        // - When we run the code for the first time, the 'Reducer function' will be executed with a default 'action' that should spit out the initial state.
+        // - We PASS in the 'Reducer function' as a parameter inside the 'createStore()' function. Because the store needs to know which 'Reducer function' is responsible for changing that store. Because its the 'Reducer'            that works together with the store.
+        const store = redux.createStore(counterReducer);
+                   
                                  
         / --- 2. Add a 'Reducer function'
         // ⭐ When 'store' is initialized, 'Redux' will EXECUTE the passed in 'Reducer function' inside 'createStore()' method, for the first time. So if we dont specify a default or initialValue to our state, it will be               'undefined' which will result in an ERROR.
@@ -4377,22 +4383,11 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             };
           }
 
-          // return the unchanged/default state upon initialization AND if none of the 'if' statements meet.   ie: ' { counter: 0 } '
+          // return the unchanged/default state upon initialization. ie: ' { counter: 0 } '
           return state;
         };
-        
+
                                  
-                                 
-        / --- 1. Create the store
-        // - 'createStore()' is method exposed by redux library, which creates a store.
-        // - The store should manage some data, that data is determined by the 'Reducer function'. Because it is the reducer function that will produce new state snapshots, whenever an 'action' is dispatched.
-        // - When we run the code for the first time, the 'Reducer function' will be executed with a default 'action' that should spit out the initial state.
-        // - We PASS in the 'Reducer function' as a parameter inside the 'createStore()' function. Because the store needs to know which 'Reducer function' is responsible for changing that store. Because its the 'Reducer'            that works together with the store.
-        const store = redux.createStore(counterReducer);
-        
-       // -- Initial state --
-       / console.log(store.getState());                       
-                                        
         / --- 3. Create a Subscriber function which gets the latest state     ->  using 'getState()' method.     This will be our component in a React App.
         // 'getState()' is a method available on the 'store'. It will give us the latest state snapshot AFTER it was updated.
         const counterSubscriber = () => {
@@ -4401,7 +4396,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         };
 
                                  
-        / --- 4. Make Redux aware of the subscriber function, and tell REDUX to **EXECUTE** the 'counterSubscriber()' function whenever our data/state in the store changes     ->    using the 'subscribe()' method 👇
+        / --- 4. Make Redux aware of the subscriber function, and tell REDUX to execute it whenever our state changes     ->   using the 'subscribe()' method 👇
         // 'subscribe()' is a method available on the 'store'. Which expects a function as an argument which REDUX will execute whenever the data in the store changes.
         store.subscribe(counterSubscriber);
 
@@ -4432,13 +4427,13 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
       
          - To make working with 'Redux' in React applications easier, there is another package which we should install called the 'react-redux' package.
                                                                                                                               
-         - 'react-redux' package makes connecting to React applications to 'Redux' stores, reducers, etc..., very simple. For example it will make very simple to subscribe components to the 'Redux' store.
+         - 'react-redux' package makes connecting to React applications to 'Redux' stores, reducers, etc..., very simple. For example it will make it very simple to subscribe components to the 'Redux' store.
       
-                           ⭐⭐⭐   run 'npm i redux react-redux'   ⭐⭐⭐
+                           ⭐⭐⭐   run 'npm i redux react-redux'   ⭐⭐⭐         ->   ` install 'redux' AND 'react-redux' packages `
                            
                            
                            
-  - By convention. 'Redux' related files are stored 'store' folder inside the 'src' folder. ie: src/store/counterStore.js
+  - 🌟🌟🌟🌟 -->  By convention. 'Redux' related files are stored 'store' folder inside the 'src' folder. ie: src/store/counterStore.js
                                  
                                  
                                  
@@ -4449,6 +4444,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
   
           
     🧨 〰〰〰  Creating 'Redux store' and 'Reducer function'  〰〰〰 🧨
+    ⭐ Since Redux store is just a function and NOT a React component, then we use camelCase when naming it. ie: 'counterStore.js' ⭐
       // -------- counterStore.js file -------- 
                               import { createStore } from "redux;";
 
@@ -4506,15 +4502,22 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                  
                                  
                   -------------        
-      🧨 〰〰〰  Accessing data/states managed by Redux store in React components --> using 'useSelector()' hook  〰〰〰 🧨
+      🧨 〰〰〰  using 'useSelector()' hook  ---> to Access data/states managed by Redux store in React components  〰〰〰 🧨
        
           - We can use 'useStore()' hook which gives us direct access to the store. [ 🛑 DONT USE 🛑]
-          - 'useSelector()' hook is a React hook that allows us to extract data from the Redux store state. It is more convenient to use that 'useStore()' because it allows us to select a certain state that is managed by              the store.  
+          - For class-based components we can wrap our component with 'connect' function   [ 🛑 NOT IMPORTANT 🛑]
+                                 
+          - 'useSelector()' hook is a React hook that allows us to extract data from the Redux store state. It is more convenient to use that 'useStore()' because it allows us to select a CERTAIN state that is managed by              the store, rather than ALL the states managed in the store.
           
                 🌟 'useSelector()' hook takes in a function as an argument, which determines which state/data we want to extract from the store. 🌟 This function will automatically be executed for us by 'react-redux' 🌟
-                              ie: const counter = useSelector((state) => state.counter)
-          - ⭐⭐  When we use 'useSelector()', 'react-redux' will automatically subscribe the component inwhich we are using 'useSelector()' in, to the Redux store.  ⭐⭐
-                                That subscribed component will then be notified and re-executed whenever the extracted state ('counter') changes in the Redux store. 
+                
+                              ie: '  const counter = useSelector((state) => state.counter)  '
+                                 
+          - ⭐⭐  When we use 'useSelector()', 'react-redux' will automatically SUBSCRIBE the component inwhich we are using 'useSelector()' in, to the Redux store.  ⭐⭐
+                         That subscribed component will then be NOTIFIED and RE-EXECUTED whenever the extracted state ('counter') changes in the Redux store. 
+                         
+                         If the component ever gets unmounted/removed from the DOM, then React-redux will clear/remove that component subscription to the Redux store. 
+                                              So React-Redux manages the component subscription for us behind the scenes.
                                 
      
       // -------- Counter.js file -------- 
@@ -4545,10 +4548,10 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
     🧨 〰〰〰 Dispatching Actions from inside components  --> using 'useDispatch()' hook  〰〰〰 🧨
     
           
-          - The 'useDispatch()' hook does not receive any arguments, instead when we call it, it returns a dispatch function which we can execute to dispatch an action to our Redux store 
-                                  We store that dispatch function in a variable. 
+          - The 'useDispatch()' hook does not receive any arguments, instead when we call it, it returns a dispatch function which we can use execute to dispatch an action to our Redux store.     We store that dispatch function in a variable.
+                                  
           
-          - 🌟 The returned dispatch function can take in an argument which we can pass an OBJECT to. That OBJECT should contain a type property that points to an identifier in our 'Reducer function' in the Redux store,                  that contains the state that we want to return when the dispatch function is executed.
+          - 🌟 The returned dispatch function can take in an argument which we can pass an OBJECT to. That OBJECT should contain a 'TYPE' property that points to an identifier in our 'Reducer function' in the Redux store,                  which contains the state that we want to return when the dispatch function is executed.
           
           
            // -------- Counter.js file -------- 
@@ -4587,8 +4590,983 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                               export default Counter;
           
           
+
+                               
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` Attaching Payloads to Actions `
+                               
+     〰 Payload is a non-official, community accepted naming convention for the property that holds the actual data in a Redux action object.     
+      
+      - Remember, 'Actions' are plain JavaScript objects that must have a 'type' attribute to indicate the type of action performed.
+      - 'Actions' are the only source of information for the store as per Redux official documentation. 
+      -  It carries a payload of information from your application to store. 
+      
+      'Action payloads' are just extra properties that holds data, which we add to our action object, when dispatching actions to the Redux store reducer function.
+      
+
+      With action payloads we can dispatch dynamic action values to the store to manipulate the state synamically, based on user input for instance.
+      
+      `   ie:    dispatch({type: 'INCREASE_BY', amount: inputRef.current.value})   `
+                                                👆👆👆
+                                            'Action Payload'
+                               
+                                                     
+                               
+// ---- example  
+                               
+      // ---- 'counterStore.js' ----          // REDUX STORE
+                    import { createStore } from "redux";
+
+                    // 1. Create 'Reducer function'
+                    const counterReducer = (state = { counter: 0 }, action) => {
+                      if (action.type === "INCREMENT") {
+                        return {
+                          counter: state.counter + 1,
+                        };
+                      }
+
+                      if (action.type === "INCREASE_BY") {                            👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        return {
+                          counter: state.counter + action.amount,                           👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        };                                                              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈                  
+                      }
+
+                      if (action.type === "DECREMENT") {
+                        return {
+                          counter: state.counter - 1,
+                        };
+                      }
+                      return state;
+                    };
+
+                    // 2. Create the Redux Store and pass in the 'Reducer function'
+                    const counterStore = createStore(counterReducer);
+
+                    export default counterStore;
+                               
+      
+       // ---- 'Counter.js' component ---- 
+                               
+                  import classes from "./Counter.module.css";
+                  import { useSelector, useDispatch } from "react-redux/es/exports";
+
+                  const Counter = () => {
+                    // 'useSelector()' will automatically be executed for us by 'react-redux'
+                    // ⭐⭐ whenever the extracted data from the store changes ('state.counter') ,redux wil re-render/re-execute this component. ⭐⭐
+                    const counter = useSelector((state) => state.counter);
+                    
+                    const dispatch = useDispatch();
+
+                    const incrementCounterHandler = () => {
+                      dispatch({ type: "INCREMENT" });
+                    };
+
+                    const increaseBy = () => {                                            👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      dispatch({ type: "INCREASE_BY", amount: 10 });                                👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    };                                 👆👆 // -> Action payload                         👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                    const decrementCounterHandler = () => {
+                      dispatch({ type: "DECREMENT" });
+                    };
+
+                    const toggleCounterHandler = () => {};
+
+                    return (
+                      <main className={classes.counter}>
+                        <h1>Redux Counter</h1>
+                        <div className={classes.value}>{counter}</div>
+                        <div className={classes["buttons-container"]}>
+                          <button onClick={incrementCounterHandler}>+</button>
+                          <button onClick={increaseBy}>Increase by 10</button>                  👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈  
+                          <button onClick={decrementCounterHandler}>-</button>
+                        </div>
+                        <button onClick={toggleCounterHandler}>Toggle Counter</button>
+                      </main>
+                    );
+                  };
+
+                  export default Counter;
+                             
+                             
+                             
+                             
+                             
+                             
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` Working with multiple state properties, in the Redux store `
+                             
+                             
+                             
+          // ---- 'counterStore.js' ----          // REDUX STORE
+                             
+                    import { createStore } from "redux";                          
+
+                    const initialState = { counter: 0, showCounter: true };                           👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                    const counterReducer = (state = initialState, action) => {                                  👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈           
+
+                      if (action.type === "INCREMENT") {
+                        return {
+                          counter: state.counter + 1,
+                          showCounter: state.showCounter,
+                        };
+                      }
+
+                      if (action.type === "INCREASE_BY") {
+                        return {
+                          counter: state.counter + action.amount,
+                          showCounter: state.showCounter,
+                        };
+                      }
+
+                      if (action.type === "DECREMENT") {
+                        return {
+                          counter: state.counter - 1,
+                          showCounter: state.showCounter,
+                        };
+                      }
+
+                      if (action.type === "TOGGLE_COUNTER") {                               👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        return {
+                          counter: state.counter,                                                 👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                          showCounter: !state.showCounter,                                    👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        };
+                      }
+
+                      return state;
+                    };
+
+                    const counterStore = createStore(counterReducer);
+
+                    export default counterStore;
+
+                             
+                             
+                             
+          // ---- 'Counter.js' component ---- 
+
+                  import classes from "./Counter.module.css";
+                  import { useSelector, useDispatch } from "react-redux/es/exports";
+
+                  const Counter = () => {
+                    // 'useSelector()' will automatically be executed for us by 'react-redux'
+                    // ⭐⭐ whenever the extracted data from the store changes ('state.counter') ,redux wil re-render/re-execute this component. ⭐⭐
+                    const counter = useSelector((state) => state.counter);
+                    const showCounter = useSelector((state) => state.showCounter);
+
+                    const dispatch = useDispatch();
+
+                    const incrementCounterHandler = () => {
+                      dispatch({ type: "INCREMENT" });
+                    };
+
+                    const increaseBy = () => {
+                      dispatch({ type: "INCREASE_BY", amount: 10 });
+                    };
+
+                    const decrementCounterHandler = () => {
+                      dispatch({ type: "DECREMENT" });
+                    };
+
+                    const toggleCounterHandler = () => {                              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      dispatch({ type: "TOGGLE_COUNTER" });                                       👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    };                                                                    👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                    return (
+                      <main className={classes.counter}>
+                        <h1>Redux Counter</h1>
+                        {showCounter && <div className={classes.value}>{counter}</div>}
+                        <div className={classes["buttons-container"]}>
+                          <button onClick={incrementCounterHandler}>+</button>
+                          <button onClick={increaseBy}>Increase by 10</button>
+                          <button onClick={decrementCounterHandler}>-</button>
+                        </div>
+                        <button onClick={toggleCounterHandler}>Toggle Counter</button>
+                      </main>
+                    );
+                  };
+
+                  export default Counter;
+                           
+                           
+                           
+                           
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` How to NOT update the state in Reducer functions `
+                           
+                           
+   - IMPORTANT --> returned state in the Reducer function does NOT merge with the existing state, it 'REPLACES' / 'OVERIDES' the exising state. 
+   
+          So we must ALWAYS return the same structure of the state snapshot, when we update it in the reducer function, because we override the old state.
+          
+                               
+ 
+          
+     -- IMPORTANT -- 🛑 We should NEVER mutate the existing state by directly mutating the original state property (As shown below), when working with REDUX. 🛑
+                           
+                  〰 It is very bad practice to do so because Object and Arrays are 'Reference types' in JavaScript which are stored in the Heap. Which means that when we direcly mutate a state property, what we are doing is that we are allocating a new piece of memory in the Call Stack for that state object, which has a value that points to the original Object stored in the HEAP. So we are creating a new variable in the Call Stack everytime we directly mutate a state property, which all point to the SAME object that is stored in the HEAP and by doing so we keep mutating the ORIGINAL object in the heap. 
+                  
+                  This is bad practice and could lead to bugs, unpredictable behavior, and can make debugging our App difficult.
+                  
+                 ⭐⭐⭐⭐⭐⭐   INSTEAD we must ALWAYS OVERRIDE the exisintg state object by returning a new state object, that contains the same structure of the original object (contains all the same properties with brand new values).  ⭐⭐⭐⭐⭐⭐ So we should mutate the state in an immutable manner.
+                 
+                 // ----- Instructor words
+                 Mutating state directly can lead to odd bugs, and components that are hard to optimize.
+
+                 - So it is recommended to mutate the state in an immutable manner. 
+                 - So using the spread operator, we spread our previous state that we get and to it we add our new change which later gets merged to our new state. 
+                 - This is what is meant by doing the update in an immutable manner. 
+                 - So the general approach is to make a copy of our state, mutate that copy in an immutable manner and merge it to the original state. 🌟🌟🌟
+                // ------------------------------------------
+                  
+             const counterReducer = (state = initialState, action) => {
+              if (action.type === "INCREMENT") {
+                state.counter++;                     👈 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑  NEVER DO THIS
+
+                return state;                     👈 🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑🛑  NEVER DO THIS
+              }
+
+              return state;
+            };
+                           
+                           
+          -------------   
+    -- INSTEAD  -- 🟢 We should ALWAYS 'OVERIDE' it by returning a brand new state object 🟢
+    
+          const counterReducer = (state = initialState, action) => {
+
+            if (action.type === "INCREMENT") {
+              return {                                    👈 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢 ALWAYS uupdtae the state like this by returning a new object with same structure
+                counter: state.counter + 1,                         👈 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢 ALWAYS uupdtae the state like this 
+                showCounter: state.showCounter,                       👈 🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢 ALWAYS uupdtae the state like this 
+              };
+            }
+
+            return state;
+          };
+                           
+    
+                           
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` What is Redux Toolkit and Why use it `
+                           
+                               
+      The more complex our App becomes, the more complex it becomes to use REDUX correclty. 
+        Which is why we can use 'Redux Toolkit' package to make using REDUX in complex application to make it easier to setup and maintain an App-wide state using REDUX.
+      
+      - Some potential problems we could face while using REDUX as our application continues to grow are (as we manage more and more states in Redux): 👇
+      
+            1. One issue could be with 'Action type property values' which are defined as strings. As our app gets bigger it will be hard to manage these action types because 
+                    - They could cause bugs through typos
+                    - We could have clashing action type values 
+                               
+                           const counterReducer = (state = initialState, action) => {
+                            if (action.type === "INCREMENT") {              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                              return {                                    
+                                counter: state.counter + 1,                        
+                                showCounter: state.showCounter,                        
+                              };
+                            }
+
+                            return state;
+                          };    
+                           
+                           
+                     -- Possible soultion:   We could create constants for each action type value and use that constant everywhere in our app, inorder to avoid typos.
+                              ie:    export const INCREMENT = 'INCREMENT';
+                           
+                           👆👆👆 This approach was used in the past with REDUX before 'React toolkits' were introduced.
+                           
+                    -------------
+          2. Another issue we could face with big applications and REDUX is the 'amount of data we have in our store'. 
+                As our app gets bigger, we will need to add more states and copy them each time we return a new state through an action, inorder to always have the same                       structure of the initial state with same state properties.         Which can result in a HUGE store file that is hard to manage.
+                
+      [Which was one disadvantage of 'React Context API', which is that by having all the app contexts in one Contect Provider file, then the file would be too big and hard to maintain]
+                           
+                           
+                    -------------
+         3. 'State Immutablity' could also be another problem with large apps using REDUX (dicussed in above section). We have to ensure that we always return a brand new state snapshot, which has the same structure as the initail state. And not directly manipulate the existing state anywhere.
+           🛑 We could easily direclty manipulate exisiting state properties *without even knowing* if we have NESTED state Objects or Arrays INSIDE other state properties. 
+                    ie:   
+                    
+                          const reducerFn = (state = initialState, action) => {
+                            return  {
+                                      employeeName: state.name,
+                                      employeeId: state.id,
+                                      address: {
+                                          locality: {                                       👈👈👈👈👈 NESTED OBJECT
+                                              address1: state.addressFirst,
+                                              address2: state.addressSecond,
+                                          }
+                                    }
+                                  }
+                                });
+                           
+                           
+ `                         
+       --------------------------------- Instructor Comment ---------------------------------                  
+              With Redux itself too, you could split your Redux setup into different files, so there also it didn't ended up being in one large file.
+
+              Redux Toolkit allows us to write more efficient code, speed up the development process and automatically apply the best recommended practices.
+
+              Redux Toolkit was introduced to address the following issues that we had in case of Redux.
+
+              1. Configuring a Redux Store is too complex or cumbersome.
+
+              2. It requires a lot of extra packages to build a large scalable application.
+
+              and lastly
+
+              Redux requires too much boilerplate code which makes it cumbersome to write efficient and clean code.
+`
+                           
+                           
+                           
+                           
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` Installing Redux Toolkit in our existing App `
+                           
+                           
+    - Run --> '  npm install @reduxjs/toolkit  '
+                           
+                           
+    - 🌟 If we already have 'REDUX' package installed in our App. We could uninstall after installing 'Redux toolkit' because it is already included in the 'REDUX toolkit' package.
+          run --> ' npm uninstall Redux '
+                           
+                           
+                           
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` USING Redux Toolkit `
+                           
+  
+          - We use 'Redux Toolkit' in our Redux 'store.js' file. It simplifies certain aspects when working with Redux.
+          
+          
+          
+// ----------------------------------------------------------------
+// ----------------------------------------
+ / `   'createSlice()' function   --  from 'Redux Toolkit'   `   
+                           
+    - import { createSlice } from '@reduxjs/toolkit'
+                          
+    - 'createSlice()' function lets us prepare a slice of our global state. So when we have pieces of state that are not directly related, like an authentication state and a counter state, we could create different slices (potentially in different files) to make our code more maintainable.
+    
+    
+    -Note:  We can also use a Redux Toolkit function called 'createReducer()', but 'createSlice()' function is more powerfull than 'createReducer()'. 
+        It will simplify a couple of aspects in one go.
+        
+      
+   // ---  USING  'createSlice()' function
+    - 'createSlice()' function wants an object as an argument, which represents a piece of slice from our Global state. This Object needs three properties: 
+                           
+              1. A 'name' property. Which is an identifier for that piece of state slice. Its value is ussually a string describing the state we are using the 'createSlice()' function for (can be anything we want).
+              2. Next the 'createSlice()' Object needs an 'initialState' property, where its value is the initialState of our state slice. 
+              3. And then a 'reducers' property. Which its value is an Object, which we could say that represents a MAP of all the REDUCERS this state slice needs. In that 'reducers' object we can add methods with any name of our choice (method names are importent which will be discussed later), which will do the same thing as when dispatching actions 👇 in the Reducer function when using normal Redux store (without Redux Toolkits).
+                          
+                                              // --- STANDARD Redux Reducer function WITHOUT Redux Toolkits 'createSlice()' function
+                                                const counterReducer = (state = initialState, action) => {
+                                                  
+                                                  if (action.type === "INCREMENT") {                  👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                                    return {
+                                                      counter: state.counter + 1,                     👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                                      showCounter: state.showCounter,               👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                                    };
+                                                  }
+
+                                                  return state;
+                                                };
+                           
+                           
+            - ⭐⭐  These methods in the 'reducers' Object, which is inside the 'createSlice()' function object argument:
+                          〰 will be called for us by REDUX depending on which 'action' was triggered
+                          〰 will AUTOMATICALLY receive the latest/current 'state' as well as the 'action', as ARGUMENTS.  
+                          〰 We ussually DONT need the 'action' argument tho, since these methods will be called for us by Redux Toolkits depending on which 'action' was triggered.
+                          As a result 👆, we dont need to write our own 'if' statement check anymore (ie: '  if (action.type === "INCREMENT") { return {....} }; '), instead we will able to use these different 'reducers' methods and dispatch 'actions' that target these different 'reducers' methods.
+                          
+                          We will need 'action' argument tho, whenever we need to dispatch 'Action payloads' which are just extra properties that holds data (check explanation on 'ACTION PAYLOADS' at top). Discussed below 👇
+                           
+                                
+                                
+                          〰 Inside the 'reducers' methods we **ARE** allowed to directly 'MUTATE' the state properties  (ie: 'state.counter++'). 
+                          
+                              Unlike with normal Redux (WITHOUT Redux Toolkits), where directly mutating the state was bad practice and FORBIDDEN because doing so would cause bugs due to state being an Object this a reference type and so we would be mutating the original state object stored in the Heap everytimg we directly mutate a state property. 
                               
+            🌟🌟🌟 It is not FORBIDDIEN with 'Redux Toolkits' to directly 'MUTATE' the state properties, because 'Redux Toolkits' uses another package called 'Immer' which will detect code like this ' state.counter++ ' which makes it SEEM like we are directly manipulating state properties, but then 'Immer' package will
+                              1. automaticlly CLONE the existing state object   --> 
+                              2. CREATE a new state Object with the edited state properties, all while COPYING over all the other state object properties that we did NOT change / were not edited  -->  
+                              3. and then it will return that new state object which OVERRIDES the previous state Object that we are editing, in an IMMUTABLE way.
                               
+                 👆👆👆👆 So 'Immer' package that 'REDUX Toolkits' uses does the same thing that we would do when returning a new state Object in normal Redux Reducer function *WITHOUT* Redux Toolkits,  by overriding the previous state Object with the new returned one.  👆👆👆👆
+                           
+                           
+                            〰 When using Redux Toolkits, wee can still have reducers that listen to actions that have extra 'Payloads' / extra data. We can do so by using the 'action' argument available in the 'reducers' object methods as a second argument. 
+                            
+                                 
+                            
+                  // ---- EXAMPLE of 'createSlice()' funciton (in the 'store.js' file)
+                            
+                                import { createSlice } from "@reduxjs/toolkit";
+
+                                const initialState = { counter: 0, showCounter: true };
+
+                                createSlice({
+                                  name: "counter",
+                                  initialState,                     // --> 📝 Remember ES6+ syntax that is same as writing 'initialState: initialState,'
+                                  reducers: {
+                                    increment(state, action) {          // --> 👆👆👆 📝 Remember ES6+ object methods syntax that is the same as writing 'increment: function() {....},'
+                                      state.counter++;          // --> ⭐ even tho it seems we are DIRECTLY mutating state property, 'IMMER' package updates the new state in an IMMUTABLE manner behind the scenes. See notes.
+                                    },
+
+                                    decrement(state, action) {
+                                      state.counter--;
+                                    },
+
+                                    increaseBy(state, action) {
+                                      state.counter = state.counter + action.amount;          // --> using an 'action PAYLOAD' 
+                                    },
+
+                                    toggleCounter(state, action) {
+                                      state.showCounter = !state.showCounter;
+                                    },
+                                  },
+                                });
+                            
+                            
+                            
+                            
+                            
+// ----------------------------------------------------------------
+// ----------------------------------------
+ / `   'configureStore()' function   --  from 'Redux Toolkit'   `  
+                           
+                           
+      - To use the state slice that we created using 'createSlice()' function, we can use the 'configureStore()' function provided by the 'Redux Toolkit' package INSTEAD of 'createStore()' function (which is provided by the standard 'Redux' package without 'Redux Toolkit')
+                           
+      - 'configureStore()' function is similar to 'createStore()' function, but it lets us merge multiple Reducer Functions together into ONE.
+      
+      〰 Because REMEMBER  ->  - ***** We can only have ONE STORE in Redux with ONE Reducer Function that manipulates its state ***** 
+                               - In standard Redux, we pass that Reducer function to the 'createStore()' function.   ie:    ' const counterStore = createStore(counterReducer); '
+        (NOTE: we can combine multiple reducer functions into ONE and then use that ONE reducer function inside the 'createStore()' function, using 'combineReducers' function available in standard Redux WITHOUT Redux Toolkit)
+                           
+      🌟🌟 But with 'Redux Toolkit' we can use the 'configureStore()' funciton instead of 'createStore()' function available in standard Redux, which lets us create a store for our App with the difference that it makes merging multiple Reducer functions into ONE Reducer function, EASIER.
+      
+       - 'configureStore()' funciton lets us pass multiple reducer Functions into it as an argument, and then behind the scenes, 'Redux Toolkit' combines all these Reducer functions into one Reducer function which is used to create the store and make it available to use in the App.
+                 `🌟 Because REMEMBER, we can only have ONE store in REDUX, with ONE Reducer funtion that manipulates the store state in that store. 🌟`
+      
+      
+      
+      - To make the slice we created available to components in the App, we first need to store the RETURNED value of calling 'createSlice()' function in a variable/constant.
+      
+              ie:  const counterSlice = createSlice({
+                      name: 'counter',
+                      initialState,
+                      reducers: {
+                        .....
+                      }
+                    });
+                           
+      - ⭐ We can then use the 'reducer' method (NOT 'reducers'), available on the 'createSlice()' function returned value (ie: ' counterSlice.reducer ')) inorder to get access to the reducer methods that we set up in the slice. (ie: the reducer methods we created in the 'reducers' object property, in 'createSlice()' function)
+      
+                                                                    👇👇
+            Behind the scenes, The 'reducer' method ' counterSlice.reducer ', is basically a big 'REDUCER FUNCTION' with 'if' statements that trigger the different reducer methods that we created in the 'createSlice()'    function, depending on the ACTION type. 
+            So just like we would do with standard Redux WITHOUT Redux Toolkit, where we use 'if' statements in the store Reducer function, to check for the action type that was dispatched then return a new state object.
+                           
+                            
+           
+    
+      ---------
+      / ---- using 'configureStore()' funciton
+              
+      - 'configureStore()' funciton takes in a 'configuration' Object as an argument, Where we pass in a 'reducer' property, which is an EXPECTED property by 'configureStore()' funciton. 
+      
+      📝 SIDE NOTE: the property is called 'reducer' and NOT 'reducers', because remember in the end Redux expects ONE Reducer function that is responsible for manipulating the global state object.
+      
+      - The value for the 'reducer' property can be a SINGLE Reducer function, or it can be an Object that contains MULTIPLE Reducer functions (as 'key/value' pairs) which will then be merged together as one big Reducer function by the 'configureStore()' funciton.
+      
+      - In that 'reducer' property object containing multiple Reducer functions, we can give each Reducer function a 'key' / property name of our choice and a value of the reducer function we want to attach it to.
+      
+      
+            // -- example with a SINGLE reducer function in 'configureStore()' function
+
+                    const store = configureStore({
+                      reducer: counterSlice.reducer,
+                    });
+
+
+            // -- example with a MULTIPLE reducer functionS in 'configureStore()' function   [🟢 USE THIS even if we have a SINGLE reducer function 🟢]
+                  
+                        const store = configureStore({
+                          reducer: {
+                            counter: counterSlice.reducer,            // <-- Our Reducer function
+                            anotherReducer: anotherReducerSlice.reducer,
+                          },
+                        });
+                          
+                           
+        ---------------------------------         
+        /* ⭐⭐⭐  IMPORTANT:  - Even when we work with multiple state slices, we still only have ONE Reduxstore. 
+                                          - So we only call 'configureStore()' ONCE in an App  ⭐⭐⭐
+                                          - And that store only has ONE root 'reducer' property, where we can register our state slices.
+                                          - These state slices in the 'reducer' property are then merged together by Redux to form ONE main Reducder function that can be used in the store.   */
+        ---------------------------------   
+                                             
+                           
+                           
+                           
+      
+      
+      
+      
+// ----------------------------------------------------------------
+// ----------------------------------------
+ / `   Disptching actions in 'Redux Toolkit'   ` 
+                           
+                           
+      - For Dispatching actions, 'createSlice()' function has us covered. It automatically creates unique 'ACTION' identifiers/ types for our different Reducer methods (that are inside the 'reducers' property in our state slice),
+        just like we would do when using STANDARD Redux when dispatching actions.
+                
+                       '👇👇👇 STANDARD Redux WITHOUT Toolkit 👇👇👇'            
+                  ie: `     const increaseBy = () => {
+                              dispatch({ type: "INCREASE_BY", amount: 10 });      
+                            };            👆👆👆👆👆
+                      `               // Action Identifier
+                
+                
+      - To get hold of these automatically created action identifiers and be able to use them to dispatch actions, we can use the 'actions' method available on the returned value from the 'createSlice()' function.
+            ie: ' console.log(counterSlice.actions) '
+                           
+            〰 This 'actions' method will contain an object where the 'KEY' names of its properties match the reducer method names that we created in the 'createSlice()' function, inside its 'reducers' property. 
+               And the value of those properies are NOT the reducer methods we defined in our state slice, INSTEAD they are methods that are created automaticlly by Redux Toolkit, 
+             🌟🌟 which when CALLED  ->  
+                      1. will create action objects for us just like the ones we created on our own with STANDARD Redux when dispatching actions (shown below)
+                      2. which we can then use to dispatch those action objects inorder to trigger the different Reducer methods it generated from our original reducer methods, in the state slice 
+             🌟🌟
+                        
+                Which is why these methods that are called on the 'actions' method (ie: ' counterSlice.actions.increment(); ') are called  'Action Creators' because they create action Objects for our reducer methods in                   the state slice.
+                       
+                       'STANDARD Redux WITHOUT Toolkit'   -->     const increaseBy = () => {           👇👇  -->  // Action Payload. which is simply data that will be used by the reducer method to upde the state.
+                                                                    dispatch({ type: "INCREASE_BY", amount: 10 });
+                                                                  };         👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆👆    
+                                                                                    // Action Object
+                           
+                              
+                These automatically created action objects will contain ->  
+                                              1. A 'type' property with a UNIQUE identifier value, per action. So we dont have to worry about typos or coming up with identifier values
+                                                      ie:  'dispatch({ type: UNIQUE_IDENTIFIER });'
+                                              2. And if the reducer method needs an 'action payload' --> then we can pass that action in a an object as an argument to the 'Action Creator' method we call when dispatching                                                   an action. That 'action payload' will be available in a 'payload' property in the generated and dispatched 'Action object', so to extract and be able to use that 'action                                                    payload' in our reducer method, we will need to access it through the 'payloads' property.
+                                                      ie:  'dispatch({ type: UNIQUE_IDENTIFIER, payload: { amount: 10, } });'
+                           
+                           // -- example of dispatching an action with a payload, from component   [🟢 PREFER THIS 🟢]
+                            const increaseBy = () => {
+                              dispatch(counterActions.increase_By({ amount: 10, }));
+                            };                                        👆👆👆👆       -> dispatching 'Action payload' with Reduc Toolkit
+                            
+                            
+                            // OR if we only have one action payload we can just pass it as an argument without it being in an object [🛑 DONT PREFER THIS 🛑]
+                            const increaseBy = () => {
+                              dispatch(counterActions.increase_By(10));
+                            };  
+                                  
+                           
+                           
+                           
+                           
+            // Full example
+          ------------------------------------------------
+          // ----- Redux Toolkit Store  -  'counterStore.js'
+          ------------------------         
+                  import { createSlice, configureStore } from "@reduxjs/toolkit";
+
+                  const initialState = { counter: 0, showCounter: true };
+
+                  const counterSlice = createSlice({
+                    name: "counter",
+                    initialState,                 // --> 📝 Remember ES6+ syntax that is same as writing 'initialState: initialState,'
+                    reducers: {
+                      increment(state, action) {            // --> 📝 Remember ES6+ object methods syntax that is the same as writing 'increment: function() {....},'
+                        state.counter++;                          // --> Behind the scenes we are NOT directly mutating the state property thanks to 'IMMER' package. See NOTES ABOVE.
+                      },
+                      decrement(state, action) {
+                        state.counter--;
+                      },
+                      increase_By(state, action) {
+                        console.log(action);               // 👇👇👇👇 Accessing the dispatched 'Action payload' with Reduc Toolkit
+                        state.counter = state.counter + action.payload.amount;      
+                      },
+                      toggleCounter(state) {
+                        state.showCounter = !state.showCounter;
+                      },
+                    },
+                  });
+
+                   /* ⭐⭐⭐  IMPORTANT: - Even when we work with multiple state slices, we still only have ONE Reduxstore. 
+                                          - So we only call 'configureStore()' ONCE in an App  ⭐⭐⭐
+                                          - And that store only has ONE root 'reducer' property, where we can register our state slices.
+                                          - These state slices in the 'reducer' property are then merged together by Redux to form ONE main Reducder function that can be used in the store.   */
+                  const store = configureStore({
+                    reducer: {
+                      counter: counterSlice.reducer,                // 👈👈👈👈   ⭐⭐⭐ the property name 'counter' will be used in components 'useSelector' hook to access this state slice
+                    },
+                  });
+
+
+                  export const counterActions = counterSlice.actions;           // 👈👈👈👈  Will be used in the App components to dispatch action to the store
+
+                  export default store;
+
+
+                         
+          ------------------------------------------------               
+          // ----- Component where we dispatch the actions to the store  -  'Counter.js'
+          ------------------------             
+                    import classes from "./Counter.module.css";
+                    import { useSelector, useDispatch } from "react-redux/es/exports";
+
+                    import { counterActions } from "../store/counterStore";
+
+                    const Counter = () => {
+                      // 'useSelector()' will automatically be executed for us by 'react-redux'
+                      // ⭐⭐ whenever the extracted data from the store changes ('state.counter'), redux wil re-render/re-execute this component. ⭐⭐
+                      const counterStore = useSelector((state) => state.counter);               👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                      const { counter, showCounter } = counterStore;                      👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                      const dispatch = useDispatch();                             // 👈👈👈👈  used to dispatch actions to the store and update the state
+
+                      const incrementCounterHandler = () => {
+                        dispatch(counterActions.increment());                         👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      };
+
+                      const increaseBy = () => {
+                        dispatch(counterActions.increase_By({ amount: 10 }));               // 👈👈👈👈👈👈 Passing an 'Action Payload' with a property name ('amount'), in an object, as an argument.
+                      };
+
+                      const decrementCounterHandler = () => {
+                        dispatch(counterActions.decrement());                             👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      };
+
+                      const toggleCounterHandler = () => {
+                        dispatch(counterActions.toggleCounter());                                 👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      };
+
+                      return (
+                        <main className={classes.counter}>
+                          <h1>Redux Counter</h1>
+                          {showCounter && <div className={classes.value}>{counter}</div>}
+                          <div className={classes["buttons-container"]}>
+                            <button onClick={incrementCounterHandler}>+</button>
+                            <button onClick={increaseBy}>Increase by 10</button>
+                            <button onClick={decrementCounterHandler}>-</button>
+                          </div>
+                          <button onClick={toggleCounterHandler}>Toggle Counter</button>
+                        </main>
+                      );
+                    };
+
+                    export default Counter;
+
+
+    
+      
+   
+// ----------------------------------------------------------------
+// ----------------------------------------
+ / `   Working with multiple state slices and splitting our code   `                          
+                           
+                           
+        Look at my  ->  ' react-redux-and reduc-toolkit-basics ' app on github  '  https://github.com/BigMikeL9/react-redux-and-redux-toolkit-basics  '
+                           
+                  
+                
+                           
+ 
+/ ----------------------------------------------------------------------------------------------------------------
+/ ----------------------------------------------------------------------------------------------------------------
+/ -----------------------------------------------------------------
+/ / '  Advanced REDUX  '
+                           
+                           
+                           
+// ----------------------------------------------------------------
+// ----------------------------------------
+ / `   Working with multiple state slices and splitting our code   ` 
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        ⭐⭐⭐  VERY IMPORTANT  ⭐⭐⭐              -----   ALL 'REDUCER FUNCTIONS' concept. Not for Redux  -----
+
+  [[  NOT just for the REDUX 'Reducer function', but all 'Reducer functions' in general (ie: the reducer function we use in 'useReducer' as well, etc....)  ]]
+
+   - REMEMBER --> Our 'Reducer function' should be a: 
+                                      1. 'pure' function
+                                      2. 'side-effect' free function
+                                      3. 'synchronous' function
+                           
+  - So the 'Reducer function' should take in some input (which contains the 'previous state' and the 'dispatched action', as arguments)     
+ /                      -->     and then produce some OUTPUT  (which is a new state with the saem structure as the initialState)  without any side-effects along the way or any ashyncronous code that blocks it
+ 
+                         🛑✋🛑✋ SO no 'side-effects' or any 'ashyncronous' should be part of our Reducer functions 🛑✋🛑✋
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         
+                         
+// ----------------------------------------------------------------
+// ----------------------------------------                      
+/ '  Where should side-effects and async tasks be executed when working with Redux ??????  '     
+                           
+    -- So when working with Redux. If we need to dispatch an action that would involve a side-effect (like an http-request that should be sent), Where should we put that 'side-effect' or 'Ashyncronous' code ????? 
+     
+  // answer 👇👇👇
+      We have two posible places where we CAN put our side-effects in that case: 
+                                                            1. We can directly put the 'async' code sirectly into the component,  (ie: in a 'useEffect()' hook, for example).
+                                                                    And then only dispatch an action once the 'side-effect' is done.  (ie: data is fetched via http-request)
+                                                                        (So Redux doesnt know anything about that 'side-effect')
+                                                              
+                                                            2. OR we can we write our own 'action creator' functons. So we dont use the automatically generated ones that 'Redux Toolkit' provides. Instead we write our own                                                                'action creators'.       
+                                                                And for those 'action creators' that we create, 'Redux' has a solution that allows us to perform 'side-effects' and run 'asychronous tasks' as part of these                                                                    'action creators' that we create. WITHOUT changing the 'Reducer funciton', because 'Reducer functions' MUST remain 'side-effect' free.
+                                                                
+                     [REMEMBER (explained above), 'action creators' are just objects with 'type' property and possibly a 'payload' property, that is used tell the 'Reducer function' 
+                      what type of action was dispatched so that the state can be updated accordingly. 'action creators' are automaticlly generated by us in Redux. Or we could create 
+                        our own as just mentioned]
+                                                            
+                                                           
+                                                             👇👇👇👇👇👇👇👇   [BOTH appraches will be discussed below]   👇👇👇👇👇👇👇👇
+                                                             
+                                                             
+                                                             
+                                                             
+// ----------------------------------------------------------------
+// ----------------------------------------                      
+/ ` Where to put LOGIC when working with Redux, in components or Redux Reducer functions??? `
+                                                             
+                                      Check image called ' Where to put logic when working with Redux ' in Redux folder
+                           
+                           
+     ⭐⭐⭐⭐⭐⭐  
+     
+    1. We should add 'Synchronous', 'side-effect' free code (ie: tranforming data for instance) in Redux 'Reducer methods' 👇👇
+    
+      Redux Team specifically recommend putting as much logic as possible in reducers:
+
+      Wherever possible, try to put as much of the logic for calculating a new state into the appropriate reducer, rather than in the code that prepares and dispatches the action (like a click handler). 
+      This helps ensure that more of the actual app logic is easily testable, enables more effective use of time-travel debugging, and helps avoid common mistakes that can lead to mutations and bugs.
+      
+      
+    2. And add 'Asynchrounous' code (ie: http-requests) in the components themselves.
+    
+    
+    
+    
+ /// ----------------------------
+   🌟🌟🌟  IMPORTANT -> REMEMBER never directly manipulate Redux store state properties from components, like we do with 'React Toolkit' (ie: state.counter++) because remember we dont actually directly manipulate the state properties with 'React Toolkit', instead 'immer' package overrides the previous Redux store state with a new state object, everytimme an action is dispatched.
+                            
+    IT is very BAD practice to directly manipulate Redux store properties from outside the Redux store because the Redux store state is an object which is a 'reference type' and so if we directly change one of its properties in a component, we would be changing the original Redux store object stored in memory.
+    
+    Instead IF we want to update the Redux store state from outside the Redux store [[[ ' WHICH WE USSUALLY DONT NEED TO ' ]]], from a component, we would need to create a copy of that Redux store object, then manipulate data inside it, and then override that existing Redux store state with the newly generated state object from outside the Redux store.
+    
+                  // ie: 
+                        import { useDispatch, useSelector } from 'react-redux';
+                        import { cartActions } from '../../store/cart-slice';
+
+                        const ProductItem = (props) => {
+                          const cart = useSelector((state) => state.cart);
+                          const dispatch = useDispatch();
+
+                          const { title, price, description, id } = props;
+
+                          const addToCartHandler = () => {
+                            const newTotalQuantity = cart.totalQuantity + 1;              👈👈👈👈👈👈👈👈👈👈👈
+                           // cart.totalQuantity = cart.totalQuantity + 1;                      // 🤚🛑🚏🚫⛔🛑🛑🛑✋🛑✋  SHOULD NEVER MANIPULATE THE REDUX STORE STATE PROPERTIES DIRECLTY FROM OUTSIDE THE REDUX STORE.
+                            
+                            const updatedItems = cart.items.slice();             // 👈👈👈👈👈👈👈👈👈👈👈  create copy via slice to avoid mutating original state
+                            const existingItem = updatedItems.find((item) => item.id === id);
+                            if (existingItem) {
+                              const updatedItem = { ...existingItem };                                  // 👈👈👈👈👈👈👈👈👈👈👈 new object + copy existing properties to avoid state mutation
+                              updatedItem.quantity++;
+                              updatedItem.totalPrice = updatedItem.totalPrice + price;              👈👈👈👈👈👈👈👈👈👈👈
+                              const existingItemIndex = updatedItems.findIndex(                         👈👈👈👈👈👈👈👈👈👈👈
+                                (item) => item.id === id                                                                    👈👈👈👈👈👈👈👈👈👈👈
+                              );
+                              updatedItems[existingItemIndex] = updatedItem;                                👈👈👈👈👈👈👈👈👈👈👈
+                            } else {
+                              updatedItems.push({                                                         👈👈👈👈👈👈👈👈👈👈👈
+                                id: id,
+                                price: price,                                   
+                                quantity: 1,
+                                totalPrice: price,
+                                name: title,
+                              });
+                            }
+
+                            const newCart = {                                                             👈👈👈👈👈👈👈👈👈👈👈
+                              totalQuantity: newTotalQuantity,                                
+                              items: updatedItems,
+                            };
+
+                            dispatch(cartActions.replaceCart(newCart));                                       👈👈👈👈👈👈👈👈👈👈👈
+                          };
+    
+
+                          
+// ----------------------------------------------------------------
+// ----------------------------------------                                 
+  ` FrontEnd code vs BackEnd code `
+                                  
+                                   see image called  -->  "FrontEnd code vs BackEnd code" in 'REDUX' folder
+                                   
+                                   
+  - The code we need to write on the Front-End and where we write that code will depend on the BackEnd code. 
+      So for intance, if we are using a BackEnd as a Dummy backend that just stores data and doesnt have any logic, we would have to create all the logic in the FrontEnd. 
+        So we would Send the data to the database and then when fetching that data from the BackEnd we would add logic in the FrontEnd to transform that fetched data before displaying it on the screen.
+      
+          ie: when adding an item to a cart in an App. We would need to: 
+                                    1. Send the item to the database when user adds the item to cart. 
+                                    2. Then fetch that data as the app mounts, from the database. 
+                                    3. Then transform that data using logic we add in the FrontEnd. To show the cartItems in a certain way, then display them in the App.
+                                    
+                                    
+    - OR we could add all the logic we need in the BackEnd using 'Node.js' to transform the data we send to the backend. In that case we would not need to add logic in the frontend that would transform that data.
+                          
+                          
+                          
+      
+// ----------------------------------------------------------------
+// ----------------------------------------                      
+/ ` Connecting Redux with side-effects and Asynchronous code `
+      
+      
+      - REMEMBER  ->  'Reducer functions' MUST be 'PURE', 'side-effect' free and 'synchronous' functions.
+      
+      - So when we have any code that produces a side-effect or is Asyncrounous, like sending an http request  -> ⭐ Such code MUST NOT go into our 'Reducer function' ⭐ 
+      
+            🛑🛑⛔⛔⛔✋   SO NEVER create a side-effect /  send http-request inside our 'Reducer function'   🛑🛑⛔⛔⛔✋  
+            
+            
+            
+   -- ` 🟢 Where should we add side-effects and async tasks when working with Redux?? `
+            
+            We have two options:  1. We can simply ignore Redux and execute side-effects and async tasks in components (in 'useEffect()' hook)               <-- [🟢🟢🟢🟢 PREFER THIS 🟢🟢🟢🟢]
+                                  2. Or we can create an 'action creators' which would allow us to run ashyncronous code, or generally any side-effect code
+                                      👆 second approach helps keep our components lean by having asynchronous code logic in our store slices files.
+      
+         
+                                  '   check 'react-redux advanced projct' to see how to implement both options   '
+                          
+// ----------------------------------------                      
+/ ` Alternative to puuting all side-effect data in commponents, by creating 'action creators' to run ashyncronous code, or generally any side-effect code, when using Redux `   [OPTION 2 👆👆👆👆👆👆👆👆👆]
+                          
+                          
+  - Remember in Redux Toolkit, 'action creators' are used to generate action Objects which are used when dispatching actions to the Redux store Reducer funciton. 
+              ['see `  Disptching actions in 'Redux Toolkit'  ` section above 👆 for more explanation about the Redux Toolkit 'action creators'. ']         
+                          
+                          
+    - We can write our own 'action creators' and we can write them to create 'Thunks'.
+    
+    - ` What is a 'Thunk' ????  ` 
+    A 'Thunk' is simply a function that delays an action until later. Until something else is finished.
+    
+    So we could write an 'action creator' as a 'Thunk', so that it does not immediatly return the 'action object' but instead returns another function which eventually returns the 'action Object' after some time. 
+        So that we can run some other code before dispatching the 'action object', to the Redux store Reducer function.
+        
+        
+        
+    -- Creating our own 'action creator'
+                          
+        - Remember Reducer functions should always be 'pure', 'side-effect' free and 'synhronous' functions. So they cant have any http requests inside them.
+        - ⭐ So when creating our own 'action creators' to handle side-effects, we can add them inside our Redux Toolit slice file, but OUTSIDE of the reducer methods in the 'createSlice()' function. So underneath the                 'createSlice'.
+        
+        - When creating our own 'action creator' as a 'Thunk', it will return another function which receives the 'dispatch' function as an argument.
+             That returned function will automatically get executed by Redux Toolkit when we dispatch the 'action creator' function  we created, from components.
+        
+        - Remember that Redux Toolkit privides 'action creators' for us, for each reducer method we create inside the 'createSlice()' function (inside of it object argument 'reducers' property).
+        - We call the created 'action creator' function from other components by dispatching it just like dispatching any other 'action creator' method provided to us by the Reducer methods we create inside 'createSlice()'. 
+        
+        - When the 'action creator' function is dispatched, its returned function will automatically get called/executed by Redux Toolkit.
+            Even tho we are not dispatching an action object   [ie: STANDARD Redux --> ` dispatch({ type: "INCREASE_BY", amount: 10 });  `  ] , instaed we are dispatching our created action creator function ->
+              Redux Toolkit is prepared for that because it does not only accept 'action object' witha 'type' property, but it also accepts 'action creators' that return functions and so Redux Toolkit will automatically               execute that returned function for us. Redux Toolkit will also give the 'dispatch' function as an argument in that retruned function, so that we can dispatch actions inside that returned function. 
+              
+              Since this is a common pattern where we want 'action creators' that can perform side-effects and that can then dispatch other actions which eventually reach the Redux Toolkit store Reducer methods.
+        
+        
+        // exmaple 👇👇👇
+        // --- cart-Slice.js ---
+        
+        
+        
+        // --- App.js ---
+      
+      
+                          
+                          
+                          
+                          
+                          
+                          
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` SIDE NOTE  -->  IMPORTANT Technique to execute something  ONLY ONCE when the app starts `    ⭐⭐⭐⭐⭐⭐
+                          
+                          
+
+     -- Add 'isInitialized' OUTSIDE of the component function so that it does not changed when the component re-renders. ONLY when this file is parsed for the first time, when the app starts/mounts.
+
+                          
+            // ie: 
+
+              let isInitialized = true;                   👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+              function App() {
+
+                 const sendCartHandler = () => {
+
+                  // --- prevent sending data to database as the App starts / loads for the first time.                           👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                  if (isInitialized) {                                                                          👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    isInitialized = false;                                                                  👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    return;                                                                     👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                  }
+
+                   .........
+
+                };
+
+
+                return (
+                  <>
+                    <Layout>
+                      {showCart && <Cart />}
+                      <Products />
+                    </Layout>
+                  </>
+                );
+              }
+
+              export default App;
+                
+                
+                
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  `
+                   
+                  
+      
+      
+      
+                           
+
+                           
+               
+        
+                           
+                           
+                           
       
     
                                   
@@ -4671,6 +5649,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
     - run 'npm i react-router-dom@5'      ->   installs React Router version 5. change to 'npm i react-router-dom@6' after learning about version 6.
                                
                                
+                           
                                
                                
 // ----------------------------------------------------------------------------------------------------------------
@@ -5585,7 +6564,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 / `  'useRouteMatch' Hook   `
 
 
-    - The 'useRouteMatch' hook, similar to 'useLocation' hook but has more information anout the currently loaded Route.
+    - The 'useRouteMatch' hook, similar to 'useLocation' hook but has more information about the currently loaded Route.
     
     - We can use the 'useRouteMatch' hook to get the path defined by US and not just the one in the URL.    ie: dynamic path defined by us  -->  'quotes/:quoteId'  
                                                                                                                 actual URL path             -->  'quotes/q3'
@@ -5735,7 +6714,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                 
               ie:    <Route path="/" element={<Navigate to="/welcome" />} />                    `  <-- DONT USE THIS 🛑 `
 
-  ⭐⭐  IMPORTANT: If we redirect the user like this 👆👆. Then we will 'PUSH' two pages on to the navigation stack, one for the 'path="/"' and one for the 'path="/welcome"' path when the user gets redirected. 
+  ⭐⭐  IMPORTANT: If we redirect the user like this 👆👆. Then we will 'PUSH' two pages on to the history stack, one for the 'path="/"' and one for the 'path="/welcome"' path when the user gets redirected. 
             If we truly want to redirect the user and not clutter the navigation/history stack with unwanted paths, then we can 'REPLACE' the current page by using the 'replace' prop in the '<Navigate>' component.
             
               ie:    <Route path="/" element={<Navigate replace to="/welcome" />} />               ` <-- USE THIS 🟢 `
@@ -5947,7 +6926,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 
 
     ---------------------     
-    9. '<Prompt>' component does NOT exist in 'react-router-v6'. There is no replacement for it in 'react-router-v6'. Look for a work around.
+    9. 🛑🛑🛑 '<Prompt>' component does NOT exist in 'react-router-v6'. There is no replacement for it in 'react-router-v6'. Look for a work around. 🛑🛑🛑
         
             Stick to 'react-router-v5' is the app relies heavily on '<Prompt>' component.
             
