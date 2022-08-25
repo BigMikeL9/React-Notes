@@ -5444,23 +5444,24 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
       
       - REMEMBER  ->  'Reducer functions' MUST be 'PURE', 'side-effect' free and 'synchronous' functions.
       
-      - So when we have any code that produces a side-effect or is Asyncrounous, like sending an http request  -> ⭐ Such code MUST NOT go into our 'Reducer function' ⭐ 
+      - So when we have any code that produces a side-effect or is Asynchrounous, like sending an http request or 'setTimeout()'  -> ⭐ Such code MUST NOT go into our 'Reducer function' or 'reducer methods' if we are using Redux Toolkit ⭐ 
       
-            🛑🛑⛔⛔⛔✋   SO NEVER create a side-effect /  send http-request inside our 'Reducer function'   🛑🛑⛔⛔⛔✋  
+            🛑🛑⛔⛔⛔✋   SO NEVER create a side-effect  /  send http-request inside our 'Reducer function'   🛑🛑⛔⛔⛔✋  
             
             
             
    -- ` 🟢 Where should we add side-effects and async tasks when working with Redux?? `
             
             We have two options:  1. We can simply ignore Redux and execute side-effects and async tasks in components (in 'useEffect()' hook)               <-- [🟢🟢🟢🟢 PREFER THIS 🟢🟢🟢🟢]
-                                  2. Or we can create an 'action creators' which would allow us to run ashyncronous code, or generally any side-effect code
+                                  2. Or we can create an 'action creator' which would allow us to run ashyncronous code, or generally any side-effect code
                                       👆 second approach helps keep our components lean by having asynchronous code logic in our store slices files.
+                                                  [second approaach is explained more below with an example 👇👇]
       
          
-                                  '   check 'react-redux advanced projct' to see how to implement both options   '
+                                  '   check 'react-redux advanced project' to see how to implement both options   '
                           
 // ----------------------------------------                      
-/ ` Alternative to puuting all side-effect data in commponents, by creating 'action creators' to run ashyncronous code, or generally any side-effect code, when using Redux `   [OPTION 2 👆👆👆👆👆👆👆👆👆]
+/ ` Second approach of creating 'action creator' to run ashyncronous code, or generally any side-effect code, when using Redux `   [OPTION 2 👆👆👆👆👆👆👆👆👆]
                           
                           
   - Remember in Redux Toolkit, 'action creators' are used to generate action Objects which are used when dispatching actions to the Redux store Reducer funciton. 
@@ -5472,36 +5473,165 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
     - ` What is a 'Thunk' ????  ` 
     A 'Thunk' is simply a function that delays an action until later. Until something else is finished.
     
-    So we could write an 'action creator' as a 'Thunk', so that it does not immediatly return the 'action object' but instead returns another function which eventually returns the 'action Object' after some time. 
+    So we could write an 'action creator' as a 'Thunk', so that it does not immediatly return the 'action object' but instead returns ANOTHER function which eventually returns the 'action Object' after some time. 
         So that we can run some other code before dispatching the 'action object', to the Redux store Reducer function.
         
         
         
     -- Creating our own 'action creator'
                           
-        - Remember Reducer functions should always be 'pure', 'side-effect' free and 'synhronous' functions. So they cant have any http requests inside them.
-        - ⭐ So when creating our own 'action creators' to handle side-effects, we can add them inside our Redux Toolit slice file, but OUTSIDE of the reducer methods in the 'createSlice()' function. So underneath the                 'createSlice'.
+        - Remember Reducer functions should always be 'pure', 'side-effect' free and 'synhronous' functions. So they CANT have any http requests inside them or 'setTomoeout()', for instance.
         
-        - When creating our own 'action creator' as a 'Thunk', it will return another function which receives the 'dispatch' function as an argument.
+        - ⭐ So when creating our own 'action creators' to handle side-effects, we can add them inside our Redux Toolkit slice file, but OUTSIDE of the reducer methods in the 'createSlice()' function. So underneath the                 'createSlice()' function.
+        
+        - When creating our own 'action creator' as a 'Thunk', we can return another function which receives the 'dispatch' function as an argument.
              That returned function will automatically get executed by Redux Toolkit when we dispatch the 'action creator' function  we created, from components.
         
-        - Remember that Redux Toolkit privides 'action creators' for us, for each reducer method we create inside the 'createSlice()' function (inside of it object argument 'reducers' property).
+        - Remember that Redux Toolkit provides 'action creators' for us, for each reducer method we create inside the 'createSlice()' function (inside the 'reducers' property in its object argument).
+        
         - We call the created 'action creator' function from other components by dispatching it just like dispatching any other 'action creator' method provided to us by the Reducer methods we create inside 'createSlice()'. 
         
         - When the 'action creator' function is dispatched, its returned function will automatically get called/executed by Redux Toolkit.
-            Even tho we are not dispatching an action object   [ie: STANDARD Redux --> ` dispatch({ type: "INCREASE_BY", amount: 10 });  `  ] , instaed we are dispatching our created action creator function ->
-              Redux Toolkit is prepared for that because it does not only accept 'action object' witha 'type' property, but it also accepts 'action creators' that return functions and so Redux Toolkit will automatically               execute that returned function for us. Redux Toolkit will also give the 'dispatch' function as an argument in that retruned function, so that we can dispatch actions inside that returned function. 
+            Even tho we are not dispatching an action object   [ie: STANDARD Redux --> ` dispatch({ type: "INCREASE_BY", amount: 10 });  `  ] , instead we are dispatching our own created action creator function ->
+              Redux Toolkit is prepared for that because it does not only accept 'action object' with 'type' property, but it also accepts 'action creators' that return functions and so Redux Toolkit will automatically               execute that returned function for us. Redux Toolkit will also provide the 'dispatch' function as an argument in that returned function, so that we can dispatch actions inside that returned function. 
               
               Since this is a common pattern where we want 'action creators' that can perform side-effects and that can then dispatch other actions which eventually reach the Redux Toolkit store Reducer methods.
         
         
         // exmaple 👇👇👇
         // --- cart-Slice.js ---
+
+                    const initialState = { cartItems: [], totalQuantity: 0, totalPrice: 0 };
+
+                    const cartSlice = createSlice({
+                      name: "cart",
+                      initialState,
+                      reducers: {
+                        addItemToCart(state, action) {
+                          const newItem = action.payload.newItem;
+                          const existingItem = state.cartItems.find(
+                            (item) => item.id === newItem.id
+                          );
+
+                          if (existingItem) {
+                            existingItem.quantity++;
+                            existingItem.totalPrice =
+                            existingItem.totalPrice + action.payload.newItem.price;
+
+                            state.totalQuantity++;
+                            state.totalPrice = state.totalPrice + action.payload.newItem.price;
+                          } else {
+                            state.cartItems.push(newItem);
+                            state.totalQuantity++;
+                            state.totalPrice = state.totalPrice + newItem.price;
+                          }
+
+                          console.log("Redux Store current state:", current(state));
+                        },
+
+                      },
+                    });
+
+
+                    /* 🟡🟠 -- OPTION 2 of implementing Asynchronous code and Redux --  
+                      - We create our own 'action creator' with a THUNK. Which returns a function inwhich we can execute side-effect / asynchronous code (since it is not in the Redux store Reducer function). 
+                    */
+
+                    export const sendCartData = (cart) => {                                                         👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      return async (dispatch) => {                                                            👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        try { 
+                          dispatch(
+                            uiActions.showNotification({
+                              status: "pending",
+                              title: "Sending...",
+                              message: "Sending Cart Data to Database",
+                            })
+                          );
+
+                          const response = await fetch(
+                            "https://react-apps-http-default-rtdb.firebaseio.com/cart.json",
+                            {
+                              method: "PUT",
+                              body: JSON.stringify(cart),
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                            }
+                          );
+
+                          if (!response.ok)
+                            throw new Error("Sending Cart Data to Database Failed!!!");
+
+                          const data = await response.json();
+
+                          console.log("Cartitems pushed to Database 👉", data);
+
+                          dispatch(
+                            uiActions.showNotification({
+                              status: "success",
+                              title: "Success",
+                              message: "Cart Data successfully sent to Database",
+                            })
+                          );
+                        } catch (error) {
+                          console.log(error);
+
+                          dispatch(
+                            uiActions.showNotification({
+                              status: "error",
+                              title: "ERROR!!",
+                              message: "Sending data to Database Failed!",
+                            })
+                          );
+                        }
+                      };
+                    };
+                    // -------------------
+
+                    export const cartActions = cartSlice.actions;
+
+                    export default cartSlice;
+
         
         
         
         // --- App.js ---
-      
+
+                            function App() {
+                              const dispatch = useDispatch();
+
+                              const uiStore = useSelector((state) => state.ui);
+                              const cart = useSelector((state) => state.cart);
+
+                              const { showCart, notification } = uiStore;
+
+                              // ------
+                              useEffect(() => {
+                                // --- 🟠 Option 2 - creating our own 'action creator' in 'cart-Slice.js'
+                                dispatch(sendCartData(cart));                                                     👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                              }, [sendCartData, dispatch]);
+                              // ------
+
+                              return (
+                                <>
+                                  {notification && (
+                                    <Notification
+                                      status={notification.status}
+                                      title={notification.title}
+                                      message={notification.message}
+                                    />
+                                  )}
+                                  <Layout>
+                                    {showCart && <Cart />}
+                                    <Products />
+                                  </Layout>
+                                </>
+                              );
+                            }
+
+                            export default App;
+
       
                           
                           
@@ -5548,22 +5678,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
               }
 
               export default App;
-                
-                
-                
-// ----------------------------------------------------------------------------------------------------------------
-// -----------------------------------------------------------------
-/ `  `
-                   
-                  
-      
-      
-      
-                           
 
-                           
-               
-        
+                                          
                            
                            
                            
@@ -5579,8 +5695,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
  / `  React Router  `
 
 
- - Multiple pages in a single app. The illusion of having multiple pages, with different URLs to the same Single-Page applications. 
-          So are still building a Single-page application where React and the Browser is responsible for updating what the user sees, but we'll  be able to change the URL and use multiple pages.
+ - Multiple pages in a single app. The illusion of having multiple pages with different URLs, to the same Single-Page applications. 
+          So we are still building a Single-page application where React and the Browser is responsible for updating what the user sees, but we'll  be able to change the URL and use multiple pages.
                                
     
 // -------------
@@ -5604,15 +5720,15 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
     - The combination of those different pages (inwhich each have their own 'path'), makes up a website.  
       
     
-      ------ ` Different between Tradition multi-page websites and a React Single-Page application ` ------
+      ------ ` Difference between traditional multi-page websites and a React Single-Page application ` ------
                                
-          - In a tradition multi-page website (without React) we would have some server that sends back different HTML files for different URLs. 
+          - In a traditional multi-page website (without React) we would have some server that sends back different HTML files for different URLs. 
           
-          - We would build something a tradition multi-page website by creating different HTML files for each page, and store them on a server. 
+          - We would build a traditional multi-page website by creating different HTML files for each page, and storing them on a server. 
               Then to open these different pages on the website, the client would send a request to the server which then sends back the HTML page to the client, which is rendered by the browser.   
           
           When we have different HTML pages, that means that we dont have a 'Single-Page app', which means that when we change the URL 👇
-                                            1. We leave the browser (We leave all our running client-side app)   
+                                            1. We leave the browser (We leave our running client-side app)   
                                             2. Fetch a new page  (client sends a request to the server)
                                             3. Wait for the request-response cycle  
                                             4. and then let the browser render the new HTML page 
@@ -5627,9 +5743,9 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         - So we use React to build 'Single-Page applications' which: 
                                             1. Has ONE HTML page which is initially loaded when the user first visits our website, thereafter JavaScript takes over
                                                   (Only ONE initial HTML request & response)
-                                            2. We can then manipulate the URL (the 'path' after our domain) with JavaScript, which changes what we see on the screen when the URL changes or when a link is clicked, WITHOUT                                                sending a request to the server to render a new HTML file (fetch a new HTML file).
+                                            2. We can then manipulate the URL (the 'path' after our domain) with JavaScript, which changes what we see on the screen when the URL changes or when a link is clicked, WITHOUT                                                sending a request to the server to render a new HTML file (ie: fetch a new HTML file).
                                                              [Page (URL) changes are handled by client-side (React) code]
-                                               ⭐⭐ Instead React blocks that browser default to send a request to the server, and instead it updates whats visible on the screen with client-side JavaScript (React).
+                                               ⭐⭐ Instead, React blocks that browser default to send a request to the server, and it updates whats visible on the screen with client-side JavaScript (React).
                     
                     
 
@@ -5640,13 +5756,13 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 
     - 'React Router' lets us create multi-page React applications. 
     
-    - It provide Client-side Routing. So Routing functionalities in our client-side React app.
+    - It provides Client-side Routing. So Routing functionalities in our client-side React app.
     
     - Remember -> Routing means that different paths in the URL, loads different pages
     
     
     
-    - run 'npm i react-router-dom@5'      ->   installs React Router version 5. change to 'npm i react-router-dom@6' after learning about version 6.
+    - run 'npm i react-router-dom@5'      ->   installs React Router version 5.       ⭐ change to 'npm i react-router-dom@6' after learning about version 6. ⭐
                                
                                
                            
@@ -5661,10 +5777,10 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                    ie: 'www.our-domain.com/'                --> render component A
                        'www.our-domain.com/products'        --> render component B
                        
-    - We could just use React and state to render different components when the URL path changes and prevent the default browser behavior to sending a request to a server when a link is clicked,
+    - We could just use React and state to render different components when the URL path changes and prevent the default browser behavior of sending a request to a server when a link is clicked,
                 but 'react-router-dom' package does all that for us.
                                
-    - The 'react-router-dom' package makes registering different routes or 'paths' in the URL, and rendering different for a certain path    -->   very very EASY.
+    - The 'react-router-dom' package makes registering different routes or 'paths' in the URL, and rendering different content for a certain path    -->   very very EASY.
                                
                                
                                
@@ -5710,7 +5826,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                            
                 - To be able to use the '<Route />' component and other React router fetaures in our app, we need to wrap our root component '<App/>' with the '<BrowserRouter/>' compoennt provided by                                        'react-router-dom' package.
                            
-                - 'paths' that are not defined in the '<Route path="/home">...</Route>' component element, will not render anythinf on the page.
+                - 'paths' that are not defined in the '<Route path="/home">...</Route>' component element, will not render anything on the page.
                 
                 
                 // ----- index.js file -----
@@ -5743,9 +5859,9 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         ---------- Adding Links that takes us to different pages  ----------
           
                            🛑🛑 This approach has a BIG FLAW 🛑🛑
-    - If we add standard links / anchor tags to take us to other pages in the App, the traditional way like so 👇👇, instaed of rendering different components on the page, the link will load a *NEW HTML page*, we send a brand new request to the server as if we are using a traditional multi-page application. Which is NOT what we want.
+    - If we add standard links / anchor tags to take us to other pages in the App, the traditional way like so 👇👇, instaed of rendering different components on the page, the link will load a *NEW HTML page*, because we will be sending a brand new request to the server as if we are using a traditional multi-page application. Which is NOT what we want.
     
-          👆 This works, but it means we leave the active Single-page application, we start new one and we lose any application states that we might have in the application 👆
+          👆 This works, but it means we leave the active Single-page application, we start a new one and lose any application states that we might have had in the application 👆
                              Which goes against the idea of building a Single-page application.
                              
  
@@ -5787,11 +5903,11 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
       - React router will render an anchor tag to the DOM from the '<Link/>' component.
       - React router will then listen to clicks on this anchor tag (generated from the '<Link/>' component), and prevents the browser default of sending a request to the server and loading a new HTML page. 
                              
-      - React router will manually update the URL for us so it looks like we switched to a new page when in reality it renders components that belong to URL path, to the screen.  (Fake Navigation)
+      - React router will manually update the URL for us so it looks like we switched to a new page when in reality it renders the component that belongs to the URL path, to the screen.  (Fake Navigation)
             So with '<Link/>' components --> 1. We dont send new requests to the server, 
                                              2. We stay on the loaded Single-page application,
                                              3. We dont loose any state by loading a new HTML page
-                                             4. And we give the user the illusion of switching to different pages.
+                                             4. And we give the user the illusion of switching to a different pages.
               
                                
                                
@@ -5821,18 +5937,18 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                         
                              
                              
-        ---------- '<NavLink/>' component  ----------   [Highlighting the ACTIVE link in the navigation]
+        ---------- '<NavLink/>' component  ----------   [Highlights the ACTIVE link in the navigation]
                              
   - A special version of the '<Link/>' component that will add styling attributes to the rendered element when it matches the current URL.
                              
-    - To highlight the ACTIVE link of the page, React Router has a component that helps us which is the '<NavLink/>' component. 
+    - To highlight the ACTIVE link of the page, React Router has a component that helps us with that, which is the '<NavLink/>' component. 
           So we can use the '<NavLink/>' component for Navbar links which works exactly like the '<Link/>' component, with the difference that  👇
           
           〰 '<NavLink/>' component have an 'activeClassName' prop which takes in a classname that gets added to the NavLink whenever that link is active, ie: whenever we are on the page that the NavLink belongs to. 
            
                       ie: ' <NavLink to="/faq" activeClassName="active"> FAQ </NavLink> '   
                              
-                             - 📝 SideNote if we dont sepcify an 'activeClassName="selected"' props. The class 'active' automatically gets added to the active '<NavLink/>'
+                             - 📝 SideNote if we dont specify an 'activeClassName="selected"' props. The class 'active' automatically gets added to the active '<NavLink/>'
                    
 
       // ----- example -----
@@ -5892,10 +6008,10 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 / ` Adding Dynamic Routes with Params `
                              
 
-    - If we have a list of products and we want to always load the same page (a Product Details page) with different content for each product we click on, we can use 'dynamic routes'. 
+    - If we have a list of products and we want to always load the same page for them (a Product Details page) but with different content for each product we click on, we can use 'dynamic routes'. 
       
                     So we are rendering the same component when we click on a product link, but we are dynamically displaying different content on it.
-                      To do so we need to tell React Router for which product should the Product Detail page be loaded to, so the the right data can be displayed  👇 
+                      To do so we need to tell React Router for which product should the Product Detail page be loaded to, so the right data can be displayed  👇 
                     
                     To do so we can define 'dynamic routes' by: 
         
@@ -5989,15 +6105,15 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                              [ALWAYS USE '<Switch/>' component to prevent rendering muliplte pages at the same time in our App]  <-- This is due to just how React router works. It loads ALL paths that match the current Route -> and in React router match means the start of the path, all paths after that is ignored. ie:
                                                     👇 ---> start path
                                     <Route path="/products">
-                                            &&                                       React router will set both of these routes, active since their start path are the same. 
+                                            &&                                     React router will set both of these routes to active since their start paths are the same. 
                                     <Route path="/products/:productId">
                                       
-                             👆👆 To prevent this and always gave one ACTIVE route, we use '<Switch/>' component and 'exact' prop 👆👆
+                             👆👆 To prevent this and always have one ACTIVE route, we use '<Switch/>' component and 'exact' prop 👆👆
                              
     - The '<Switch>' component looks through all of its child routes and it displays the first one whose 'path' matches the current URL. 
           ⭐ This component is what we want to use in most cases for most applications, because we have multiple routes and multiple plate pages in our app but we only want              to show one page at a time.
           
-        - 📝 SIDE NOTE: URL paths basically work like a folder structure, so if we have a 'products' page that open up a 'product-details' page when we click on a products, then we write the path in the '<Route>' like                this 👇
+        - 📝 SIDE NOTE: URL paths basically work like a folder structure, so if we have a 'products' page that open up a 'product-details' page when we click on a product, then we write the path in the '<Route>' like                this 👇
                                               👇👇
                               <Route path="/products/:productId">   // URL WILL BE --->  '  our-domain.com/products/<any value>  '           
                                    <ProductsDetails />
@@ -6019,7 +6135,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             // URL  --->  '  our-domain.com/products/<any value>  '
     
                            <Switch>           👇👇 -> start path
-                             <Route path="/products">                               ----> `This Route will be ACTIVE`
+                             <Route path="/products">                               ----> 🟢 `This Route will be ACTIVE`
                                    <ProductsDetails />                      
                               </Route>
                                                 👇👇👇
@@ -6039,7 +6155,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                    <ProductsDetails />                      
                               </Route>
                                                 👇👇👇
-                              <Route path="/products/:productId" exact>             ---> `This Route will be active`
+                              <Route path="/products/:productId" exact>             ---> 🟢 `This Route will be active`
                                    <ProductsDetails />
                               </Route>
                             <Switch>
@@ -6201,8 +6317,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             <Header />
             <main>
               <Switch>
-                <Route path="/" exact>              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈              / IMPORTANT -> if we dont add 'exact' props to 'path="/"' then all pages will open the <Welcome/> page since all paths 
-                  <Redirect to="/welcome" />              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈                        start with a "/".    ie: ' our-domain.com/ '  is the same as ' our-domain.com '
+                <Route path="/" exact>              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈              / ` IMPORTANT -> if we dont add 'exact' props to 'path="/"' then all pages will open the '<Welcome/>' page since all paths start with a "/".    ie: ' our-domain.com/ '  is the  same as ' our-domain.com ' `
+                  <Redirect to="/welcome" />              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈                        
                 </Route>                                  👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
                 <Route path="/welcome">
                   <Welcome />
@@ -6494,7 +6610,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
             which will return an object that containg key/value pairs of the query paramater key and its value.
             
             
-    - We can the use the 'get()' method on the returned Object and pass in the key of the Query parameter, which gives us its value.
+    - We can use the 'get()' method on the returned Object and pass in the key of the Query parameter, which gives us its value.
             
                
     
@@ -6675,7 +6791,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                 'React-Router-v6' now ALWAYS looks for exact matches if we define a 'path' like this     ->     '<Route path="/products" element={<Products />} /> '
 
                 🛑🛑 NEVER USED 🛑🛑
-      --  If we want the old behavior in 'React-Router-v5' where if we dont include the 'exact' prop, then multiple page components will be rendered at the same time if they start with the same path
+      --  If we want the old behavior in 'React-Router-v5' of matching the atsrt of a path only. 
+            Then multiple page components that start with the same path will be rendered at the same time.   This behavior happens in 'React-Router-v5' if we dont include the 'exact' prop.
                         -> then we can use '*' at the end of the 'path' in 'React-Router-v6'             
                         
                         ie:  ' <Route path="/products/*" element={<Products />} /> '
@@ -6694,11 +6811,11 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 
 
       ---------------------
-   6. '<NavLink>' component now doesnt need the 'activeClassName' prop in 'React-Router-v6'. An 'active' class is autoimatically added to the navlink if the Route path matches its ' to="..." ' value.
+   6. '<NavLink>' component now does not need the 'activeClassName' prop in 'React-Router-v6'. An 'active' class is automatically added to the navlink if the Route path matches its ' to="..." ' value.
    
             If we want to apply a specific class other than the default one 'active', when the NavLink is active, 
                             then we would need to manually check if the NavLink is active through the 'className' props, using an arrow function like so 👇👇
-                ⭐⭐⭐ This arrow funtion will contain information about the NavLink and the current state of the naviagtion. We can access this info though argument in the arrow function.
+                ⭐⭐⭐ This arrow funtion will contain information about the NavLink and the current state of the naviagtion. We can access this information though an argument in the arrow function.
 
                                       👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇👇
         ie: ' <NavLink className={(navData) => (navData.isActive ? classes.active : "")} to="/welcome">
@@ -6717,8 +6834,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
   ⭐⭐  IMPORTANT: If we redirect the user like this 👆👆. Then we will 'PUSH' two pages on to the history stack, one for the 'path="/"' and one for the 'path="/welcome"' path when the user gets redirected. 
             If we truly want to redirect the user and not clutter the navigation/history stack with unwanted paths, then we can 'REPLACE' the current page by using the 'replace' prop in the '<Navigate>' component.
             
-              ie:    <Route path="/" element={<Navigate replace to="/welcome" />} />               ` <-- USE THIS 🟢 `
-              
+              ie:    <Route path="/" element={<Navigate replace to="/welcome" />} />               ` <-- USE THIS 🟢🟢🟢🟢 `
+                                                  👆👆👆👆👆👆👆👆👆👆👆👆👆👆
            
               
       ---------------------        
@@ -6727,12 +6844,12 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
            - instead of passing the nested '<Route>' in a child component like this in 'React-Router-v5' 👇👇👇
                 
                   // --- child component
-                    const Welcome = () => {
+                    const Welcome = () => {                                     
                       return (
                         <>
                           <h1>The Welcome Page</h1>
 
-                          <Route path="/welcome/user-login" exact>    👈👈👈👈👈👈👈👈👈
+                          <Route path="/welcome/user-login" exact>    👈👈👈👈👈👈👈👈👈              <-- 'React-Router-v5'
                             <p>This is a nested Route</p>                     👈👈👈👈👈👈👈👈👈
                           </Route>                                          👈👈👈👈👈👈👈👈👈
                         </>
@@ -6744,21 +6861,22 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 
                   // -----
                        
-            - We need to use the '*' at the end of the parent Route ' <Route path="/welcome/*" element={<Welcome />} /> ', because we want the '<Welcome>' component to load WHENEVER our URL path starts with '/welcome',                  no matter whats comes after it, it will always be loaded when the path starts with '/welcome'.
+            - We now need to use the '*' at the end of the parent Route ' <Route path="/welcome/*" element={<Welcome />} /> ', because we want the '<Welcome>' component to load WHENEVER our URL path starts with                          '/welcome', no matter whats comes after it, it will always be loaded when the path starts with '/welcome'.
                 We also want the nested Route component to load along with the parent route component. On the same page.
-                             Since in 'react-router-dom-v6' looks for exact match for the path, by default.
+                             Since 'react-router-dom-v6' looks for exact match for the path, by default.
 
             - Another change in 'react-router-dom-v6' nested routes is that nested routes are RELATIVE to their parent route, which means that we DONT need to repeat the parameter of the parent followed by the nested                    route parameter for the path, when creating nested routes. 
-                       So the component inside the nested route will only be active WHEN the component inside the PARENT route is active.
+                      ⭐ So the component inside the nested route will only be active WHEN the component inside the PARENT route is active.
                             So we dont need to use 'useMatch' or 'useLocation' etc.. to find the path of the parent for nested routes anymore.   
                                                                                                   ie:  ->  ' <Link to={`${match.path}/new-user`} '    `Like we had to do in 'React-Router-v5'`
+                        📝 SIDE NOTE: Child '<Link>' components 'to' prop is also RELATIVE to its parent route 'path' prop.
                             
                         ie: 
                        ---- instead of this 👇  in 'react-router-dom-v5'  ----
                           
                            // ---- parent route
                                 <Switch>         👇👇
-                                  <Route path="/welcome">
+                                  <Route path="/welcome">                       <-- 'react-router-dom-v5'
                                     <Welcome />
                                   </Route>
                                 <Switch> 
@@ -6786,8 +6904,8 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                                                                   
                                                                                   
                                                                                   
-                   ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐                   [👇 USE THIS 👇]                                        
-             - ⭐⭐⭐⭐  In 'React-Router-v6', we can now add nested Routes INSIDE parent routes '<Route/>', instead of having them in the child component / component where we want to load the nested route content.
+                   🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢🟢                   [👇 USE THIS 👇]                                        
+             - ⭐⭐  In 'React-Router-v6', we can now add nested Routes INSIDE parent routes '<Route/>', instead of having them in the child component or component where we want to load the nested route content.
                                        USE THIS. Having all our route definitions in one place is alot better.
                                                                                  
                                                                                   
@@ -6836,7 +6954,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                               return (
                                 <>
                                   <h1>The Welcome Page</h1>
-                                  <Link to="user-login">Login</Link>
+                                  <Link to="user-login">Login</Link>         👈👈👈👈👈👈👈     // ⭐⭐⭐ '<Link>' path is now also RELATIVE to its parent. So 'path' for this link will take us to '/welcome/user-login'
                                   <Outlet />         👈👈👈👈👈👈👈👈👈👈👈👈👈
                                 </>
                               );
@@ -6930,8 +7048,6 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         
             Stick to 'react-router-v5' is the app relies heavily on '<Prompt>' component.
             
-                  
-        
 
 
                         
@@ -6972,7 +7088,64 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
     / ` Steps above explaned `
     
     2. Optimize code   -->  For instance adding 'Lazy Loading' which means load code only when its needed. Easy to implement when using routing. Using 'React.lazy()' method and 'Suspense' react built-in component.
+                          
+                       - ⭐⭐⭐ IMPORTANT -> With a React Single-Page Application, in the end we build one big JavaScript bundle, and that entire bundle needs to be downlaoded by every user when ever they visit the app. 
+                                                'React.lazy()' method and 'Suspense' component makes the initial javascript bundle to be downloaded, smaller which makes the initial app load speed faster for user.
+                            
                                   [WATCH this lecture again once I finish 'React Routing' module]         ' https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/25600978#overview '
+
+                          // --- example 
+                                    import React, { Suspense } from "react";
+                                    import { Route, Routes, Navigate, Link } from "react-router-dom";
+                  
+                                    // ------ pages ------
+                                    // import AllQuotes from "./pages/AllQuotes";
+                                    // import QuoteDetail from "./pages/QuoteDetail";
+                                    // import NewQuote from "./pages/NewQuote";
+                                    // import NotFound from "./pages/NotFound";
+
+                                    // --- Lazy Loading pages (instead of 👆) ---
+                                    const AllQuotes = React.lazy(() => import("./pages/AllQuotes"));                          👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                    const NewQuote = React.lazy(() => import("./pages/NewQuote"));                      👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                    const QuoteDetail = React.lazy(() => import("./pages/QuoteDetail"));                      👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                    const NotFound = React.lazy(() => import("./pages/NotFound"));                        👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+
+                                    function App() {
+                                      return (
+                                        <Layout>
+                                          <Suspense                                                       👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                            fallback={                                                                    👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                              <div className="centered">                                      
+                                                <LoadingSpinner />                            
+                                              </div>
+                                            }
+                                          >
+                                            <Routes>
+                                              <Route path="/" element={<Navigate replace to="/quotes" />} />
+                                              <Route path="/quotes" element={<AllQuotes />} />
+                                              <Route path="/quotes/:quoteId" element={<QuoteDetail />}>
+                                                <Route
+                                                  path=""
+                                                  element={
+                                                    <div className="centered">
+                                                      <Link className="btn--flat" to={`comments`}>
+                                                        Load Comments
+                                                      </Link>
+                                                    </div>
+                                                  }
+                                                />
+                                                <Route path={`comments`} element={<Comments />} />
+                                              </Route>
+                                              <Route path="/new-quote" element={<NewQuote />} />
+                                              <Route path="*" element={<NotFound />} />
+                                            </Routes>
+                                          </Suspense>                                                             👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                                        </Layout>
+                                      );
+                                    }
+
+                                    export default App;
+
                              
                
                                  
@@ -7002,7 +7175,7 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
               
        
        
-   5. Configure our server or hosting provider   -->  Then when it asks ' Configure as a single-page app (rewrite all urls to /index.html)? ' -> Write 'y' for yes. So the path in the url that the user sent as a request,                                                        is IGNORED by the server and we always return or single page application code no matter what the URL was. Then let 'React-router' handle which page to render                                                                depending on the path in the URL.
+   5. Configure our server or hosting provider   -->  Then when it asks ' Configure as a single-page app (rewrite all urls to /index.html)? ' -> Write 'y' for yes. So the path in the url that the user sends as a request,                                                        is 'IGNORED' by the server and we always return our single page application code no matter what the URL was. Then let 'React-router' handle which page to render                                                                depending on the path in the URL.
           
                                    [ Check video for explanation -> ' https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/25600992#overview ']
                                  
@@ -7010,9 +7183,170 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
                                  
                                  
                                  
+
+
 / ==============================================================================================================================================================================================
 / ==============================================================================================================================================================================================
 / ==============================================================================================================================================================================================
 // -------------------------------------------------------------
- /
+ / ` Adding Authentication to React Apps `                [user sign-up, login, and logout]
+
+
+        IMPORTANT LECTURE --> ' https://www.udemy.com/course/react-the-complete-guide-incl-redux/learn/lecture/25889756#questions '
+
+
+// ------------
+  ` Why do we need Authentications? `
+   
+    - Authentication is needed if content should be 'protected' (ie: not accessible by everyone)
+    - We need authentication in our apps, because some content should be 'protected'. Not all users and visitors of our app, should be able to access all 'content'.
+    
+          'Protected Content' could be:
+                            〰 Pages that the user should not be able to access if they are not logged in.  
+                                  Like a page that lets users change their account password for instance, which should not be accessible to users that are not logged in. 
+                                  
+                            〰 or Data that we are storing in a Database. Some 'API endpoint' which our React application might be sending requests to, on certain pages, which should be locked-down for non-authenticated                                      users.
+                                  Like a change password request that is sent to a Database to change an authenicated user password. 
+                                    So in addition to making the change password page inaccessible to unauthenticated users, we also want to lockdown the 'API endpoint' to which we are sending the change password request                                        to, so that a request sent to the this 'API endpoint' cant succeed if the user is not logged in.
+                                    
+                      🌟 Because if that change password 'API endpoint' is NOT locked-down , then ANY user that knows the URL of that 'API endpoint' will be able to send requests to change the password of other users 🌟                                        Which would be very insecure.
+                                    
+                        👆👆 ⭐⭐ Which is why we dont want to just restrict access to pages on our website, but also 'API endpoints' to which we send requests to, from inside our App ⭐⭐ 👆👆
+                                  
+                        
+// ------------                        
+    ` How does Authenication work? `
+                        
+    - In general, 'Authenication' is a two-step process: 
+                                          1. First step is always to 'Get Access / Grant permission to the user'. 
+                                                Users get access by providing their credentials, ie: by logging in, using their correent username & password. (After creating an account) 
+                                            
+                                                  
+                                          2. Second step, is to 'Send the Request to a protected resource'
+                                                 That log in data /credentials is then sent to a server where we can look into a Databse and verify the log-in credentials 
+                                                   -> and if the credentials are valid then the server/backend to which the request is sent to, grants access/permission to the user.
+                                                   
+                                         Once the user has access/permission, we can unlock certain pages in the app and/or use that permission to send subsequent requests to other protected resources on an API endpoint.
+                                            
+                                     🌟  So we first 'grant the permission' and 'then we can send more requests to other endpoints with that permission attached'  🌟
+                                     
+                            So in reality,
+                                  1. We would have a 'client with a React App' running in the browser and a 'BackEnd Server' with some server-side code written by us or by a Third-party API.
+                                  2. After the user enters their credentials, we would send a request to the server with an email/passwrod combination. 
+                                  3. The server then verifies those credentails. And then either 'Grants' permission for further requests or 'Denies' permission.
+                             
+                                                                  `Is that enough?? 👆`
+                                             
+                     ⭐⭐ ⛔   NO. Thats not enough. The 'Granted permission' CANT just be a 'yes' or a 'no' to then grant access to protected resources, like API endpoints   ⛔ ⭐⭐
+                                                      BECAUSE a 'yes' or a 'no' response from the server to grant access to the user, is 'EASY TO FAKE'.
+                  If the server to which the user sends their credentials would just reply by a 'yes' or 'no', then any user with coding skills could just skip that step of getting the permission and instead add their                         OWN 'yes' or 'no' to requests for protected resources.
+                  
+                  
+              ---- 🟡 Which is why a simply 'yes' or 'no' response from the server is not enough. And Authentication is a bit more elaborate than that.
+              
+              The part of sending and checking the user credentials, still need to happen. BUT the response sent back by the server to the client, MUST BE MORE THAN just a 'yes' or 'no'. 
+              
+                Here there are TWO main aproaches that are commonly used in the industry when sending back authentication response from the server to the client (identifying a clinet to the server) 👇: 
+
+                        1. 'Server-side Sessions'           [🔴 Not best for Single-page Applications]
+                               - Server-side Sessions is a very traditional approach of handling authentication. And a great approach.
+                               - With Server-side Sessions, once a server grants the user access, that server 'Generates' and 'STORES' a UNIQUE identifier for that specific user/client that was granted access.
+                                  And so every user on the website who authenticates, gets their own unique identifier stored on the server.
+                               - But that identifier is NOT just stored in the server, it is also 'sent back' to the client. 
+                                  🌟 So the response sent back from the server is not just a 'yes' or 'no' to grant access, but instead it also contains that UNIQUE identiifier.
+                                        So the 'server' AND the 'client' both parties know that UNIQUE identifier.
+                                        
+                               - Since the server knows that client identifier, that identifier cannot be faked. 
+                                  If we comeup with our own random identifier, the server wont recognize it, and access will be denied for that request.
+                                  
+                             🛑 DISADVANTAGE of this mecahnism -->     〰 Server-side Sessions works great if the Back-End and Front-End are 'tighly COUPLED'. 
+                                                                        〰 But if we have 'Decoupled Ends', ie: 
+                                                                                - If we have our Single-page application served by server 'A' 
+                                                                                - AND Back-End application (REST-API) served by server 'B'
+                                                                                    Then there is NO 'tight coupling'
+                                                                        〰 The Back-End API should probably work independently from the Fron-End Single-page Application and Vice-Versa.
+                                                                            Because for instance, if we are building an API that is there to be used by many websites like the Goole maps API, then that API cant be                                                                                      'tightly coupled' and focused on one specific front-end. Instead it need to stay flexible.
+                                                                            
+                                            WHICH is why we then dont want to store an identifier in the server. The server should be stateless. And not store that kind of data about the connected clients.
+                                            
+                                          🔴🔴🔴🔴   This is why 'Server-side Sessions' is not the best option for Single-Page applications   🔴🔴🔴🔴
+                                    Because Back-End AND Front-End would need to be 'tighly coupled', which is not the case in most Single-Page applications
+                                            
+
+                        2. 'Authentication Tokens'        [🟢 Good mechanism choice for Single-page Applications]
+                        
+                              - With Authentication Tokens, the user still sends their credentials (email & password) to a Back-End server, and the server validates those credentials by comparing the email/passwrod                                          combination to whats stored in the Database, and then sends back a response.
+                              - If the credentials are valid, the server 'GENERATES' a 'permission token', which is a very long string with some data encoded in to that string. 
+                                  The server will use some algorithm to encode some data like the username & password into one string, which can be decoded back into these individual pieces of data.
+                                    🌟🌟   The server DOES NOT 'STORE' that generated 'permission token'  🌟🌟
+                                    
+                              - That 'permission token' will be generated by the server with a 'private KEY' which will be used for hashing that data into a string. 🌟 That 'private KEY' is only known by the server 🌟
+                                        🌟  So the 'permission token' 'private KEY' is only known by the server, NOT by the client   🌟
+                                        
+                              - That 'permission token' is sent back to the client by the server, but only the server knows how to generate that token, because of that 'private KEY' which is only known by the server.
                                  
+              ⭐⭐  So when sending a request to the server, the React App attaches that 'permission token' to future requests inorder to access protected resources on the server. 
+                      And then the server uses the 'private key', which only it knows, to verify that the 'permission token' attached to the request sent by the client, is VALID   ⭐⭐
+                      
+                      If the 'permission token' was faked or created using a different 'private KEY', then the server will detect this and deny access to the client.
+                      
+              
+                  🟢🟢🟢🟢  'Authentication Tokens' is an approach that allows for 'DECOUPLING' of Front-End and Back-End, which is why it the best approach to use with Sinle-page Applications  🟢🟢🟢🟢
+                  
+                  
+                  Note from instructor ->   `  When working with "Authentication Tokens", these tokens are typically created in the "JSON Web Token" Format (JWT).
+
+                                               As explained in the previous lecture, those "tokens" are really just long strings which are constructed by an algorithm that encodes data into a string (with help of a                                                      private key, only known by the server).
+
+                                               You can learn more about JSON Web Tokens (JWTs) here: https://jwt.io/  `
+                  
+                  
+                  
+// -------------------------
+/ `  Is it safe to expose our Api key in the fetch method to the frontend js code?  `
+   
+
+ Absolutely not. It is not difficult for someone who has access to your to find the key. In a real app, the key would be stored somewhere in the backend. During authentication, you would send the user info and password via HTTPS to the backend and the backend responds with a token (JWT) which is valid for a limited time. The backend will only accept requests which has a valid token attached and if a request has the proper token, only then backend will the backend do the requested action i.e. firebase CRUD. 
+ 
+      Check this out: https://medium.com/@jcbaey/authentication-in-spa-reactjs-and-vuejs-the-right-way-e4a9ac5cd9a3
+
+
+
+
+
+
+
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+// -------------------------------------------------------------
+ / ` 💃💃  --- NextJS ---  💃💃 `
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  What is NextJS   ` 
+
+    
+  
+
+   - NextJS is a 'React Framework for Production' OR a 'FULLSTACK framework for ReactJS '
+
+   - React is a JavaScript library for building user interfaces, which means its a third-party package that we can add to Front-End projects, so its all about client-side JavaScript code in the end.
+   - We can use React to build interactive user interfaces. Its a library that makes building complex user interfaces way easier than it would be with just JavaScript.
+   
+   - React is called a 'library' because in its core, its really just focusing on the user interface part, ie: on components, states, props.
+      If we want to build a large application, we would need to use other third-party libraries for routing, authentication, etc...
+   
+   - 'NextJS', on the other hand, is a 'Framework' buit on top of ReactJS.
+      
+   ` Difference between a Framework and a Library `
+    - The difference between a 'framework' and a 'library' in the end, is that a 'framework' is bigger, has more features than a library. It focuses on more things reather than just small things. 
+    - 'Frameworks' also gives us clear guidance / rules on how we should write our code, how we should structure our files, and so on.
+    
+    
+   - 'NextJS' solves common problems, enhances ReactJS, and makes building react apps easier by having many core features out of the box which we would otherwise have to add to React apps on our own, otherwise. 
+        These key features in NextJS, ensures that we dont have to reinvent the wheel as often, we dont have to add as many third-party libraries to solve common problems which we need when building real production React apps.
+        
+        👆👆 That is why 'NextJS' is called a 'Framework'. Because it has alot of built-in features that help us solve alot of problems & clear guidance on how to use those features.  👆👆
