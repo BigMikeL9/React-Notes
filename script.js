@@ -7329,8 +7329,6 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
 / `  What is NextJS   ` 
 
     
-  
-
    - NextJS is a 'React Framework for Production' OR a 'FULLSTACK framework for ReactJS '
 
    - React is a JavaScript library for building user interfaces, which means its a third-party package that we can add to Front-End projects, so its all about client-side JavaScript code in the end.
@@ -7350,3 +7348,985 @@ Common scenarios for a debounce are resize, scroll, and keyup/keydown events. In
         These key features in NextJS, ensures that we dont have to reinvent the wheel as often, we dont have to add as many third-party libraries to solve common problems which we need when building real production React apps.
         
         👆👆 That is why 'NextJS' is called a 'Framework'. Because it has alot of built-in features that help us solve alot of problems & clear guidance on how to use those features.  👆👆
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  Key Features of NextJS   ` 
+        
+        
+        
+  1. 🟢 Key Feature 1  ->  '  Built-in Server side Rendering (Improved SEO!!)  '    [⭐ MOST important keyfeature of 'NextJS' ⭐]
+
+    - 'Server-side Rendering' is all about preparing the content of a page on the 'server' instead of on the 'client'.
+  
+    -  If we take a standard React application, built with just React, and inspect the source code (right click -> 'view page source'), we will notice that the page is almost empty, with just the basic HTML skeleton.            None of our React components is rendered.
+         
+    -  Since all of the rendering is done by React, and React is a 'client-side' JavaScript library  ->  all of that rendering is done on the 'client' / in the browser of the user, NOT on the 'server'.
+        🌟 And as a result, the actual HTML code which is sent FROM the 'server' to the 'client' when a user visits our page, is pretty empty with no content.
+        
+    - 👆 Depending on the type of app we are building, this could be a problem for a couple of reasons:
+    
+        〰 If our app fetches some data from a server that should be displayed, then the user might initially see a loading state / a flickering page for a fraction of a second while the request is on it way fetching the            data from the server. 
+       🌟 Because data fetching only begins once the JavaScript is executed on the 'client', and then we still have to wait for the response of that ongoing 'request'. Simply because the page that we requested from the               server, did not yet contain that data.
+       
+       〰 'Client-side rendering' might also be a problem if ' Search Engine Optimization  (SEO) ' is important in the App.
+          This does not matter for all pages, if we have an administration dashboard that is only rwched by logging in, then search engine optimization does not matter, because Search engines will never see that dashboard.  Its highly user specific and we need to login anyways which is 'client-side redering'.
+          
+          
+          But if we a blog page with alot of content that should be found through 'Search Engines', then ' Search Engine Optimization  (SEO) ' DOES matter. So we would need to render pages on the 'server' so that the 'Search Engine Crawlers' would be able to reach the content on the page. Otherwise if we just use standard React, then 'Search Engine Crawlers' will only see any content on the HTML page fetched from the server.
+          
+          This is where 'Server-side Rendering' could help us. If that page would be pre-rendered on the server, if that data-fetching could be done on the server when a request hits that server, and then the finished/rendered page would be served to users and to 'Search Engine Crawlers'   ->  then users wouldnt see the flickering loading page as data is fetched AND 'Search Engines' would see out page content which is best for ' Search Engine Optimization  (SEO) '.
+          
+         👆 🌟🌟 These are problems that 'Server-side Rendering' solves  ->  it allows us to 'pre-render' React pages and components ON a 'server' 🌟🌟
+         
+    
+    - 'ReactJS' actually has its own built-in features that allows us to add 'server-side rendering', but it can be tricky to get that right and requires extra setup from our side.
+    
+    - 🌟 With 'NextJS', 'server-side rendering' becomes way easier, because 'NextJS' has built-in 'server-side rendering'. 
+          It automatically 'pre-renders' our pages. Which means that with 'NextJS', if we build a standard 'NextJS' app without ANY extra setup from our side, those pages will be 'pre-rendered' on the server by default and out of the box.
+        Which means that:
+              〰 it is great for ' Search Engine Optimization  (SEO) ' because 'Search Engine Crawlers' are able to see the content on the page.
+              〰 And our users have a better inital load experience because they dont have that inital flickering loading state.
+              
+        If we inspect the source code (right click -> 'view page source') of a 'NextJS' page, then we will se that it is not just an HTML skeleton with no content, but instead all our page content is already there, in the HTML page which we got back from the 'server'.
+        
+        
+    - With 'NextJS', after the initial load of the page, we still get a React App (SPA) running in the browser. To have this fast/interactive user experience which we typically want to offer with ReactJS
+
+    
+    -------
+    2. 🟡 Key Feature 2  ->  ' Simplified Routing with File-Based Routing  '
+
+  - Remember 'Routing' means giving the user the illusion of having multiple pages.
+      The 'Router' basically watches the URL, and when it changes, it prevents the browser default of sending a request to some BackEnd server and instead renders different content/component(s) on the page with React.
+
+       We change whats visible on the screen based on the URL, without sending an extra request to the server. Because we stay in the Single-Page application which we typically build with React.
+
+  - With just ReactJS, 'Routing' is setup using 'react-router' in code ('<Switch/>', etc...).
+  
+  - 🌟 'NextJS' gets rid of in-code route definitions, instead with 'NextJS' we define pages and routes with 'files' and 'folders'.
+        We have a special folder in 'NextJS' apps which *HAVE* to be named 'pages', and then our structure in that folder defines the routes and paths our page supports.
+        
+        
+        
+  -------
+    3. 🟡 Key Feature 3  ->  ' Buil Full-Stack applications  '
+
+  - 'NextJS' makes it easy for us as developers to add BackEnd code to our React project. 
+      So to build a Fullstack React project, where we dont just have the Client-Side code (maybe with server-side pre-rendering), but we also have standalone BackEnd code that for example works with the file-base system or reaches out to a Database.
+     
+     With 'NextJS' its very easy to add our own BackEnd API into our React app, usinf 'nodeJS' code.
+     
+  - So with 'NextJS' we dont have to build a standalone/seperate Rest API app, but instead we can work on one project which contains both:
+        our 'Client-Side' code (Front-End code) **AND** our BackEnd API code using 'NodeJS'. 
+  
+        
+        
+        
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  Installing NextJS   ` 
+        
+        
+    run -> 'npx create-next-app@latest'
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  NextJS folder structure   ` 
+        
+   - 'pages' folder [Most important]  -> Where we setup File-Based routing. Where we define the different pages which should make up the application.
+   
+        
+   - 'Public' folder -> Holds public resources our page might use, like images.
+   
+            🌟 Unlike in a regular React app where we have an 'index.html' file in the 'Public' folder, in 'NextJS' 'Public' folder we DONT have an html file.
+                  The reason for this is that 'NextJS' has this built-in 'pre-rendering' which still gives us a Single-page application, but that Single-page application is dynamically rendered when a request reaches a                          server, so that we return an inital page with content.    
+                🌟   To be precise, 'NextJS' allows us to determine WHEN a page should be pre-rendered.   🌟
+
+   - 'styles' folder -> Holds some style files
+   
+   
+   
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  NextJS Routing  `
+   
+   
+   - in 'pages' folder, where we define our File-based routing: 
+        
+            🌟  file names in 'pages' folder will be used as 'paths' after the domain, with the exception of 'index.js'. 
+                    These files will be used to create 'Routes', which loads the components inside them when the Route path matches the URL.   🌟 
+
+        1. 'index.js' file ia a special file name which will be our Homepage. ie: if the URL doesnt have any parameters/slug after the domain   -->   'www.ourdomain.com'
+        
+        2. 'news.js' file   -->  'www.ourdomain.com/news'
+
+   **** What goes inside those files is our standard React component which will be rendered when the 'path' matches the URL. 
+          These React components must be exported so that 'NextJS' can detect them (ie: 'export default HomePage;')
+
+
+// ------------------------------
+/ `  Nested Paths & Pages (Nested Routes)  `    
+          
+                                                ` Nested Path `
+                                                    👇👇👇👇
+                             'www.ourdomain/news/importantnews'
+
+          
+        - 🌟 IMPORTANT -> 'folders' that we create in our 'pages' folder, ALSO act as 'path' segments                                                                                      
+            So if we create a 'news' subfolder in 'pages' folder, and then create an 'index.js' file inside the 'news' subfolder  --> 
+
+                                                                           `name of the subfolder`
+                                                                                    👇 
+                        〰 then that 'index.js' file 'path' will be 'www.ourdomain/news'
+                                                                                                                                    ` nested path `
+                                                                                                                                        👇👇👇 
+                        〰 and any other file that we add in the 'news' subfolder will have a nested path  -->   'www.ourdomain/news/newsdetail'
+
+
+
+// ------------------------------
+/ `  Dynamic Pages (with Parameters)  ` 
+               
+                                    ` nested path `
+                                         👇👇👇 
+                   'www.ourdomain/news/newsdetail'
+                        
+  1. 'Creating Dynamic pages/components'
+
+     - In the real world, we would probably have a list of news items in the 'news' page/component, and then when we click on one of these news items, it would take us to the detail page which shows the content of that specific news item that we selected.  
+          So we use the same 'NewsDetail' page over and over again, for different news items to show different content.   This content would probably be fetched from a DataBase.
+          
+          
+          🌟 So HARD CODING the 'newsdetail' file name in the 'news' folder which is in the 'pages' folder, is not very Realistic, because we need that route to be dynamic.
+                Instead we need to create a dynamic page where the 'path' segment in the URL is dynamic     (ie: 'dynamic paramters')
+
+
+      -- To do that, we specify the file name for the Detail page (which will be used over and over again for each news item), like so 👇👇👇
+      
+            We need to tell 'NextJS' that the detail page will be 'dynamic' by using square brackets '[]' in the file name, this file will then be loaded for different values in the URL 'path'.
+                Between the '[]' we can add an identifier, where the identifier name can be anything we want.
+          
+                                '[newsId].js'    <-- Dynamic file
+                                
+                                
+  2. 'Extracting Dynamic Parameter values'  -->  inorder to fetch/show the correct content when a user visits a dynamic page ` using 'useRouter' hook provided by 'NextJS' `
+  
+  
+     - To extract paramters entered in the URL, we can use the 'useRouter' hook, provided by 'NextJS'.  'useParams' in standard ReactJS with 'react-router-dom'
+     
+        We can use the 'query' property on the Router object, which gives us access to a nested object that contains key/value pairs.
+        
+             〰 keys are the 'identifier' we specified in the file name (ie: '[newsId].js') for the 'dynamic path'        
+
+             〰 Values are whatever we enter in the URL inplace of that 'Dynamic segments'
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  Navigation in NextJS   --   (Linking between pages) ` 
+             
+             
+    - To navigate between pages WITHOUT reloading the page by preventing the browser default of sending an http request to the server to fetch a new HTML page,
+          we can use the '<Link/>' component provided to us by 'NextJS' which will let us stay in our Single-Page application and preserve state across pages by not losing our app-wide/component wide state, which happens if we relaod the page.  
+            
+
+      🌟🌟 '<Link/>' component in NextJS functions the same way as the '<Link/>' component in standard React SPA (without 'NextJS') using 'react-router-dom' package, with the difference that 
+          〰️ 'NextJS' '<Link/>' component takes in an 'href' attribute just like a regular anchor tag, 
+          〰️ whereas 'react-router-dom' package '<Link/>' component takes in a 'to' attribute instead.
+                                    
+                  
+                  
+                  📝 Side note: With 'NextJS' ALL pages are rendered during build / on the server.. not just the first one loaded.
+                                                           
+                   
+         
+     
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  The '_app.js' File in NextJS  `
+                  
+                  
+    - The '_app.js' in 'NextJS' is a specail file that exists in the 'pages' folder out-of-the-box. 
+    
+    - The '_app.js' is our app ROOT component that 'NextJS' will render (same as the 'app.js' component in 'ReactJS')
+
+    - The 'MyApp' component inside the '_app.js' file, receives the 'Component' and 'pageProps'. 
+        These props are passed into the 'MyApp' component automatically by 'NextJS', since 'NextJS' is the thing using that 'MyApp' component.
+        
+            〰 'Component' prop holds the actual page content that should be rendered. 
+                    So it will be different whenever we switch to a diferrent page.
+                      
+            〰 'pageProps' prop are specific props the rendered page might be getting.
+                      
+                      
+    - So we can add components that should be rendered on every page, like the NavBar and the Footer -->  in the '_app.js' file 👇
+                      
+                      
+    // ----  'Layout.js' file  ----
+            function Layout(props) {
+              return (
+                <div>
+                  <MainNavigation />
+                  <main className={classes.main}>{props.children}</main>
+                </div>
+              );
+            }
+
+            export default Layout;          
+                      
+                      
+    // ----  '_app.js' file  ----
+                      
+          function MyApp({ Component, pageProps }) {
+
+            return (
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            );
+          }
+
+          export default MyApp;
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  Programmatic (Imperative) Navigation  `   using the 'useRouter' hook
+
+
+                Some times we want to navigate when an action is finished, when a button was clicked, when an http request was sent, etc...
+
+    - Same with 'useHistory' hook (in 'react-router-v5') or 'useNavigation' hook (in 'react-router-v6'), we can use 'useRouter' hook in 'NextJS' to imperatively navigate when an action is finished.
+            ie: ' const router = useRouter(); '
+                   '  router.push(`/${props.id}`); '                    `  --> navigates user to a new page, by pushing/adding the URL to the browser history stack.   `
+
+      
+    
+          There are other methods like 'replace()' (which replaces the to be added url with the current URL in the history stack, instead of pushing/adding it), 'back()' , 'reload()', and 'isReady()' which is set to true when the component/page is rendered,  etc.....
+          
+          
+          
+          
+          
+          
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  How Pre-Rendering works  &  What problems we face  `                     ⭐⭐⭐⭐⭐
+
+              [ ' standard ReactJS. WITHOUT NextJS ' ]
+    - If we want to send an http request to a BackEnd server once a page/component in React is rendered, we would ussually use the 'useEffect' hook. 
+          And inside the 'useEffect' hook we would add our async code to fetch data from the BackEnd. Like so: 
+
+
+                const HomePage = () => {
+                  const [loadedMeetups, setLoadedMeetups] = useState([]);
+
+                  useEffect(() => {
+                    const fetchData = async () => {
+                      try {
+                        const response = await fetch("enter database url here");
+
+                        if (!response.ok) throw new Error("Something went wrong!!");
+                        const data = await response.json();
+                        // transform fetched data and store it in a variable/state
+
+                        const transformedMeetups = data.map((meetup) => {});
+
+                        setLoadedMeetups(transformedMeetups);
+                      } catch (error) {
+                        console.log(error);
+                      }
+                    };
+
+                    fetchData();
+                  }, []);
+
+                  return <MeetupList meetups={loadedMeetups} />;
+                };
+
+                export default HomePage;
+
+
+
+      - ⭐⭐ REMEMBER, that the 'useEffect' hook gets executed AFTER its parent component function is executed/mounted, so in the SECOND render-cycle of its parent component.
+      - It also only gets executed once after its parent component is mounted, that is if it has an empty dependencies array.
+      - If it doesn't have an empty dependencies array, then it will get executed after its parent component is mounted/rendered, AND then everytime one of its dependencies changes.
+
+      -- So when fetching data in standard ReactJS, without 'NextJS' like so 👆, the component will first be rendered with an EMPTY meetups list because the 'loadedMeetups' state is initially set to an empty array, and THEN after the 'HomePage' component is mounted/rendered the 'useEffect' hook will get executed which then:
+                1. the meetup list will get fetched from the DataBase 
+                2. then the 'loadedMeetups' state will update using 'setLoadedMeetups', which will cause the 'HomePage' component to be re-executed and the 'loadedMeetups' state updates will be rendered and shown in the browser.
+                
+                So the 'HomePage' component will have two component render cycles: 
+                                  1. First, with an empty meetups list
+                                  2. And second, with the fetched meetup list from the Database, since the 'loadedMeetups' state was updated.
+                                  
+                                  
+          - ⭐🛑⭐ Two problems we might face with this usecase of fetching the data with standard ReactJS, are that: 
+                1. the user would seeing a loading state as the 'HomePage' component is mounted and then the data is fetched from the database, which might not be the user experience we want. 
+                2. ⭐⭐ Secondly and more IMPORTANT, is that 'Search-Engines' will not be able to see the fetched data from the DataBase since that data is only rendered AFTER the page HTML was rendered and fetched from the server. So the meetups list will be MISSING, which is BAD for 'Search-Engine Optimization -- SEO'.
+                
+               🌟🌟🌟 So 'NextJS' does NOT wait for data to be fetched in the 'useEffect' hook, to then return the fully pre-rendered page HTML from the server, instead 'NextJS returns the result of the FIRST component render cycle', which would not include data fetched from a database since that happens AFTER the component is mounted, ie: in the SECOND render cycle of the component. This is BAD for 'Search-Engine Optimization -- SEO' since 'crawlers' will not see that fetched data 🌟🌟🌟 
+               
+               
+               
+           🟢🟢🟢    To solve this problem 👆 and pre-render a page in the server that INCLUDES fetched data from a database, we need to tell 'NextJS' to wait until the data is fetched and THEN pre-render the page in the server.   🟢🟢🟢
+               
+
+
+        
+          
+          
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ `  Data Fetching and Pre-rendering in NextJS  `
+           
+           
+           - 'NextJS' has built-in pre-rendering feature, but this feature has a FLAW (discussed above 👆) which is that it only pre-renders a page with the content that is present during the page/component 'FIRST' render cycle, so if we are fetching data using the 'useEffect' hook, the data fetched will not be present during the page/component pre-render since 'useEffect' hook is executed after the component/page is mounted, ie: in the 'SECOND' render cycle.
+           
+            So the page/component will be pre-rendered without the fetched data from the server, and then after the client/browser receives the pre-rendered HTML page  ->  the 'useEffect' hook will be executed and data will be fetched and rendered on the Client-side/browser, NOT on the server.
+           
+            
+           - ⭐ After the HTML page is pre-rendered and sent to the browser by 'NextJS', 'React' takes over and the page is 'Hydrated'.
+                    'Hydrated' means that React will turn the application into a 'Single-page application' and take over control of the app.
+                    docs explanation -> 'Hydration' : This is the process of attaching react listeners to already-existing html dom nodes.
+          
+           
+           - If we want to pre-render a page with fetched data so that the initial pre-rendered HTML also INCLUDES fetched data from a database, then 'NextJS' provides us with two forms of pre-rendering which we can use to control/configure how the pages should be pre-rendered. These two forms are:
+
+                        1. 'Static-site Generation'
+                        2. 'Server-side Rendering'
+
+
+
+
+
+// -----------------------------------------------------------------
+/ `  Data Fetching and Pre-rendering for Static pages in NextJS   THROUGH ->  ⭐ [Static-site Generation] ⭐ `     -->    'SSG'
+
+                                  ⭐⭐ using 'getStaticProps()' function  ⭐⭐
+
+      - 'Static-site Generation' / 'SSG' is pre-rendering your React app into HTML at build time.
+
+      - 'Static-site Generation' is the approach we should almost use all the time in 'NextJS' apps.
+      
+      - ⭐ IMPORTANT --> When use 'Static-site Generation', a page/component is pre-rendered when we BUILD the NextJS application for production.    
+                                ie: when we run the 'npm run build' script.
+      
+      - So with 'Static-site Generation', by default the page is not rendered on the fly on the server when a request reaches the server, instead it is pre-rendered when we as a developer build the site for production using the 'npm run build' script.
+
+          〰️ 🌟🛑🛑  This 👆 means that after the app is built for production and deployed, the pre-rendered pages does NOT change.
+                         So if we update the data fetched from a database, and we need that updated data to render on the deployed app, we would need to start the build process again and re-deploy the app again, since the HTML for the app was already pre-rendered and used in deployment.
+                                  
+                      [If we want the updated data to automatically render in the deployed app, 'NextJS' provides alternatives which will be explained below 👇]
+                      
+
+     -------- ` 'Static-site Generation' in NextJS` --------
+      - To 'Static-site Generate' and pre-render pages with fetched data we can 'export' a special function provided by 'NextJS' called 'getStaticProps()' function, from INSIDE our page component file.
+      
+          -- 🤚⭐📝 IMPORTANT SideNote:  The 'getStaticProps()' function ONLY works in component FILES that are inside the 'pages' folder.
+                    So ONLY in our page component FILES and NOT in components located in folders other than the 'pages' folder, in the app.
+                    
+                    
+     --------  ` How 'getStaticProps()' function works `   --------    
+      - 'getStaticProps()' functions prepares 'props' for a page component before it gets executed and pre-rendered. 
+                  That prepared 'props' is ussually fetched data from a database.
+                  
+      - 'getStaticProps()' function is allowed to be 'asynchronous', so we can return a promise when using it and THEN 'NextJS' will wait for that promise to resolve before passing its returned 'props' to the Page component function.
+      This means that 'NextJS' will wait until our data is fetched, and THEN it returns that data as 'props' which will then be passed to the Page component function before it gets executed. 
+      
+      - With that we are able to load/fetch data BEFORE the Page component is executed, so that the Page component can be rendered WITH the required fetched data.
+      
+      
+     -------- ` Usage of 'getStaticProps()' in NextJS` --------
+      - Inside 'getStaticProps()' function, we can execute any code that would normally run on a server, like accessing a file system or securely connecting to a database, because any code we run inside the 'getStaticProps()' function will **NEVER** end up on the 'client-side' and will never execute on the 'client-side'. 
+            ⭐🟢 Simply because code inside the 'getStaticProps()' function is executed **ONLY** during the build process, 
+                      ie: when we run the 'npm run build' script. **'NOT'** on the server and **'NOT'** on the client-side/browser.
+            
+      - 'getStaticProps()' function ALWAYS have to return an object. 
+              1. So we can fetch data from inside the 'getStaticProps()' function and after the data is fetched, 
+              2. we can pass it to the page component via 'props', by returning an 'object' with a 'props' property as a 'key' which contains another object as a value,
+              3. and then that 'object' will contain the 'props' that we want to pass to the page component. 
+                    'key' will be the prop name and 'value' wil be the props value.
+            
+                    
+      --- SUMMARY ---
+      - 'NextJS' executes the 'getStaticProps()' function BEFORE executing our page component function, during the pre-rendering process.
+                So 'NextJS' will:    1. First execute the 'getStaticProps()' function in a Page component, which is ussually code to fetch data from a database
+                                     2. Then it will pass that fetched data to the Page component function via props 
+                                     3. And *THEN* 'NextJS' will execute the Page component function with the fetched data passed into it as 'props', through the 'getStaticProps()' function.
+                                     4. Thus the pre-rendered Page component HTML will contain the fetched data, and 'crawlers' will be able to see that content which is good for 'SEO'.
+                      
+                      
+                      
+    // -- example 
+          // -- 'HomePage.jsx' file
+
+                    const HomePage = (props) => {
+                      const { meetups } = props;
+
+                      return <MeetupList meetups={meetups} />;
+                    };
+
+                    // ------------------------------------
+                    // 'Static-site Generation' -- 'SSG'  -> through 'getStaticProps()' function
+                    // -- Remember --> can only be used in page components, ie: component files inside the 'pages' folder
+                    export const getStaticProps = async () => {                                                 👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      // fetch code here from database
+                      return {                                                                              👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                        props: { meetups: DUMMY_MEETUPS }, // will be passed to the page component as props           👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                      };
+                    };
+
+                    export default HomePage;
+
+                      
+                
+           
+           
+           
+          
+// -----------------------------------------------------------------
+/ `  Incremental Static Regeneration  with 'getStaticProps()' function  `  /     -->     'ISR'
+
+                                     
+
+
+    - ⛔🛑🚏  A problem we might be face when using 'getStaticProps()' function, in some websites depending on what we are doing,
+                      Is that the pre-rendered HTML pages that contain our fetched data (through 'getStaticProps()' function) during the build process, could be 'OUTDATED'. 
+                                 
+                           So when we fetch data from database through 'getStaticProps()' function -> build the page -> then deploy.  If we THEN change the data in our database AFTER deploying the app, then that updated data will not showup on our deployed app since we didnt add any client-side data fetching.
+                           
+                            Solutions:  〰 We can ofcourse re-build and re-deploy our app with the updated fetched data from the database, when our data changes, which is fine if data doesnt change frequently on a                                                   website, like a blog for instance.  
+                                        BUT if data DOES change more frequently, then re-building and re-deploying the website is not the best solution.
+                                        
+                                        〰 ⭐⭐⭐ To solve this we can use 'Incremental Static Regeneration', by adding an extra property to returned object inside the 'getStaticProps()' function.
+                                                    - That property is the 'revalidate' property.
+                                                    - When we add the 'revalidate' property in 'getStaticProps()' function returned object,  we unlock a feature called 'Incremental Static Regeneration'
+                                                    - 'revalidate' property wants a number as a value, which is the number of seconds that 'NextJS' will wait until it re-generates that page for an incoming request
+                                                    - so that means that when we use the 'revalidate' property, that page will 'NOT ONLY' get generated during the build process, 
+                                                          but it will also be generated every couple of seconds on the 'SERVER', for any incoming requests for that page
+                                                          so a 'revalidate: 10' means that that page will be re-generated every 10 seconds IF there are incoming requests for that page, and then the newly generated pages                                                           on the server will replace the previously generated pages.
+                                                    with that we ensure that our data is never outdated by regenerating the page with any new data (if any) every 10 seconds, so that we dont have to re-build and re-deploy our app just because a data changed in our database.
+                                                    
+                                                    
+                                                    
+      // -- example
+                  const HomePage = (props) => {
+
+                    const { meetups } = props;
+
+                    return <MeetupList meetups={meetups} />;
+                  };
+
+                  // ------------------------------------
+                  // 'Incremental-Static Regeneration' -- 'ISG'  -> through 'getStaticProps()' function
+                  // -- Remember --> can only be used in page components, ie: component files inside the 'pages' folder
+                  export const getStaticProps = async () => {
+                    // fetch code here from database
+                    return {
+                      props: { meetups: DUMMY_MEETUPS }, // will be passed to the page component as props
+                      revalidate: 10,                                 👈👈👈👈👈👈👈👈👈👈👈
+                    };
+                  };
+
+                  export default HomePage;
+
+                                                                                             
+                                
+
+
+// -----------------------------------------------------------------
+/ `  Server-Side Rendering  with 'getServerSideProps()' function  `  /     -->     'SSR'
+          
+          
+          
+     - Sometimes 'Incremental Static Regeneration' is not enough. And we want to Re-render a page on every single incoming request.
+          
+     - So we want to render a page 'dynamically' on the fly after the deployment on the server.
+            NOT during the build process ('Static-Site Generation') and NOT every couple of seconds (with 'Incremental Site Regeneration'). 
+             But on every request.
+             
+      - To acheive that we could use the 'getServerSideProps()' function.
+          Just like 'getStaticProps', 'getServerSideProps' is a reserved name that 'NextJS' will be looking for.
+      
+      - ⭐ The difference between 'getStaticProps' and 'getServerSideProps' is that unlike 'getStaticProps', 'getServerSideProps' will NOT run during the build process 'npm run build', but instead it will 'always run on the server after deployment'.
+            
+
+
+      - using 'getServerSideProps()' function, we still return an object that contain a 'props' property which holds all the props that we want to pass to our page component
+      
+      - ⭐⭐⭐ any code inside 'getServerSideProps()' function, will 'ONLY run on the server', 'NEVER' on the client/browser.
+            so we can run server-side code here, or perform operations that use credentials that should not be exposed to the client/browser.
+            
+            
+      - we cant use the 'revalidate' prop in the returned object of 'getServerSideProps()' function, simply because it doesnt make any sense.
+          with 'getServerSideProps()' function the page gets rendered on the server with every request anyways, and 'revalidate' prop lets us implement 'Incremental Static Regeneration' which Re-generates the page only after the specified time in seconds has passed, and upon getting a new request from the client.
+          
+          
+      - We receive a 'context' argument when using 'getServerSideProps()' function. Which is an object that contains a 'request' object that is sent to the server and a 'response' object that will be sent back to the client.     Will be able to understand this more once I take 'NodeJS' COURSE
+      
+      
+      
+      
+      // --- example 
+      
+                  const HomePage = (props) => {
+                    console.log(props);
+
+                    const { meetups } = props;
+
+                    return <MeetupList meetups={meetups} />;
+                  };
+
+                  export default HomePage;
+
+                  // -----------------------------------------------------
+                  // 'Server-Side Rendering'  -- 'SSR'  -> through 'getServerSideProps()' function
+                  export const getServerSideProps = async (context) => {          👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    const req = context.req;
+                    const res = context.res;
+                                                                        
+                    // -- fetch data from an API.
+                    // ⭐ any code in here, will ONLY run on the server, NEVER on the client
+                    // so we can run server-side code here, or perform operations that use credentials that should not be exposed to the client/browser.
+
+                    return {
+                      props: { meetups: DUMMY_MEETUPS },
+                    };
+                  };      
+      
+
+
+                  
+                  
+                  
+// -----------------------------------------------------------------
+/  ⭐⭐⭐  `  Which should we use 'getStaticProps()' or 'getServerSideProps()' function  `  ⭐⭐⭐
+
+
+      - 'getServerSideProps()' might sound better because it is garanteed to run for every request, BUT that can be a disadvantage because that means that we need to wait for our page to get generated on the server on every incoming request.
+      
+      - 🌟🟢🌟 If we dont have data that changes 'MULTIPLE TIMES every SECOND' and if we dont need access to the 'request' object, for instance for authenication (as we do in 'getServerSideProps()'), 
+        
+            then 'getStaticProps()' is the better option to use, because with it: 
+                                               - 🌟 We pre-generate an HTML file. That HTML file is then stored and served to the Client by a 'CDN', 
+                                                        which is simply FASTER than re-generating and fetching that data on every incoming request. 
+                                                     
+     - So our page will be faster when working with 'getStaticProps()' because then it can be 'CACHED' and re-used instead of re-generated on every request.
+            
+
+     
+     
+     
+// -----------------------------------------------------------------
+/  ` 'getStaticPaths()' function   -->   for Dynamic Routes when using 'getStaticProps()'  `  
+
+     
+   - If a page has Dynamic Routes AND uses 'getStaticProps()', it needs to define a list of paths to be statically generated using 'getStaticPaths()' function.
+
+   - When you export a function called 'getStaticPaths()' (Static Site Generation) from a page that uses dynamic routes, 'Nextjs' will statically pre-render all the paths specified by 'getStaticPaths()'.
+   
+   - We need a way to identify a specific detail content using its id inorder to display its content in the dynamic detailPage.
+        Inorder to do so, we can use the 'useRouter()' hook which lets us get the detailId parameter that was pushed to the URL and from there we can loop over the data in the database to identify that detail using its id -> then fetch its data inorder to display it in the detailPage.
+   
+   - ⭐ BUT We CANNOT use React Hooks inside the 'getStaticPaths()' or 'getServerSideProps()' functions because REMEMBER:  
+              〰 we can ONLY USE/call Hooks from inside React function components and NOT from regular JavaScript functions
+
+        so how do we get access to the dynamic Route in the URL using the 'useRouter' hook??   
+              
+   - ⭐ 'getStaticProps()' receives an argument called 'context', which is an object that contains a 'params' property which we can use to get access to the dynamic Route parameter in the URL.
+   
+          'context.params' is also an object where our dynamic Route identifier (folder/file name of the dynamic page in 'pages' folder -> '[detailId]')  will be available as a 'key' and its 'value' will be the detailId parameter encoded in the URL.
+          
+   🟡🟢🔵  --------------   🟡🟢🔵
+   `   When to use 'getStaticPaths()'   `
+   
+  - 'getStaticPaths()' is a function we need to export in a page component file, if:
+                  1. that page is a dynamic page that will be used do display different content
+                  2. And when we are using 'getStaticProps()',
+                        🛑 NOT if we are using 'getServerSideProps()' and NOT if we are NOT using neither 'getStaticProps()' or 'getServerSideProps()' in a page component.
+   --------------------------------
+
+
+    - REMEMBER, with 'getStaticProps()' a page component is pre-generated during the build process ('npm run build'), 
+          which means that if we have a dynamic page that will be used to display different content for different URL paths, then 'Nextjs' needs to pre-generate ALL the different versions of that dynamic page in advance, during the build process, for all the different detail Ids that will be used to identify a certain detail and fetch its data for the dynamic detail page.
+          
+     As a result since the detail page is dynamic, 'NextJS' needs to know for which detailId values it should pre-generate the dynamic detail page with that detailId content. 
+      
+     📝 SIDE NOTE:  We get the detailId from the URL inorder to get the data of a certain detail and display its content in the dynamic detail page.
+     
+   --------------------------------
+    ` Using 'getStaticPaths()' `
+
+     - 'getStaticPaths()' function can be 'async' just like 'getStaticProps()' & 'getServerSideProps'()', inorder to use async/await inside.
+     - 'getStaticPaths()' returns an 'object' where we describe all the dynamic file/page segment values  (so all the 'meetupId' for which the dynamic page should be generated)
+
+            〰 The returned 'object' need to have a 'paths' key which contains an 'array'.  
+                  And in that 'array' we must have multiple 'objects' (ONE 'object' per Version of the dynamic page).
+                      That 'object' should have a 'params' key which contains another 'object' that contains all the key/value pairs that might lead to our dynamic page
+                      
+     - 'getStaticPaths()' also need a 'fallback' key property in its returned object. 
+            This 'key' tells 'Nextjs' whether our 'paths' array contains ALL of the different 'params' values for our dynamic page, or just some of them.
+            
+            〰 'fallback: false'  ->  means that our 'paths' array contains ALL supported detailId values. Which means that if the user enters a detailId 'param' in the URL for the dynamic page that doesnt exist in the 'getStaticPaths()' 'paths' property, then they will get a '404' page 
+            
+            〰 'fallback: true'  ->  then 'Nextjs' will render the dynamic page for that detailId dynamically on the server.
+            
+            
+    // -- example
+                    
+          // 'getStaticPaths()'  ->  Have to use when we have dynamic pages ([meetupId]) and are pre-generating pages using 'getStaticProps()', so that 'Nextjs' knows what pages to pre-generate during the build process.
+          export const getStaticPaths = async () => {
+            return {
+              paths: [{ params: { meetupId: "m1" } }, { params: { meetupId: "m2" } }],
+              fallback: false,
+            };
+          };
+
+
+
+
+
+// ----------------------------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------
+/ ` Building a Backend API with Nextjs using --> * API Routes *` 
+
+
+  - 'Nextjs' makes it easy for us to build a backend API together with our Frontend React App, in the SAME project/repository, using a 'Nextjs' feature calles 'API Routes'.
+            
+  - 'API Routes' are a special routes/pages which doesnt return HTML code, but instead:
+                                〰 Accept incoming Http requests ('POST', 'PUT', 'PATCH', 'DELETE' requests) with JSON data attached to them.
+                                        and then we can do anything we want with those requests, like store data in a database and then return JSON data.
+                                        
+   ⭐ So 'API Routes' allows us to allows us to build our own API endpoints as part of the 'Nextjs' app, and they will be served by the same server as our 'Nextjs' app ⭐
+   
+   
+   ` Adding API Routes in our Nextjs app `
+   
+   1. To add 'API Routes' in our 'Nextjs' app, we add a special folder called 'api', inside the 'pages' folder.
+            'Nextjs' will pick up any javascript files stored in the 'api' folder and turn those files into 'API Routes', so into endpoints that could be targeted by HTTP requests and that should 'receive' and 'return' JSON. 
+            
+   2. In that 'api' folder, we can add JavaScript files, where the file names will path segments in the URL, just like with files inside the pages folder through 'file-based routing'.
+   
+        - In those JavaScript 'API Route' files inside the 'api' folder, we DONT create react component funcitons because these 'API Routes' are not about defining, rendering, or returning React components, instead in there we will define functions which contain 'server-side' code,
+              ⭐ because 'API Routes' wilL ONLY run on the 'server' and NEVER on the client-side/browser. The code in them will never be exposed to the 'client' so we can also use credentials in API Routes without compromising them  ->  
+                 and then those functions are simply triggered whenever a request is sent to the 'API Route' through its path, ie: '/api/[API Route file name]'.
+                 
+   3. The 'API Route' function:
+   
+              - is ussually named 'handler'
+              - must bethe default export of the 'API Route' file, ie: 'export defualt handler'
+              - will receive a 'req' and 'res' objects as arguments, just like in 'Nodejs' and 'Expressjs'.
+                      〰 'req' object contains data about the incoming request. From this object we can get things like the 'headers' or the request 'body'.
+                            We can also get the request method through the method property ('req.method'), which allows us to findout what kind of request was sent.
+                      〰 'res' object will be needed for sending back a response
+                      
+                      
+                      
+                      
+// -----------------------------------------------------------------
+/  `  'head' Metadata in Nextjs  `  
+                      
+                      
+   - We can use the '<Head/>' component provided to us by 'Nextjs' inorder to add metatags to the '<head/>' html element in each page.
+                      
+                      
+                
+                      
+// -----------------------------------------------------------------
+/  `  Deploying 'Nextjs' apps  `
+
+   
+   - There are different hosting providers we can use to deploy our 'Nextjs' app. 
+   - There are different ways of configuring our 'Nextjs' apps as well, for example we can use 'Environment Variables' to hold our database credentials for instance.
+   
+   - In this course, we use 'Vercel' hosting provider which is the same team that developed 'Nextjs'. So it is optimized for 'Nextjs'
+   
+   -- Steps to deploying to 'Vercel'
+          1. Signup with a 'git' repository provider like 'GitHub', or 'BitBucket'. 
+                  because with 'Vercel' we will directly link our 'GitHub repository' which hold our app source code to 'Vercel', and then 'Vercel' will get our source code from that repository and deploy it for us.
+          2. Once 'Vercel' is connected to our GitHub repository, Vercel will build and deploy our 'Nextjs' app for us whenever we push a 'commit ' to the repository. So we dont need to run 'npm run build', 'Vercel' will do that for us.
+                      
+
+                      
+// -----------------------------------------------------------------
+/  `  Fallback Pages in 'Nextjs' apps  `   
+          
+          'fallback' property inside 'getStaticPaths()' returned object. 
+          
+      - 'Dynamic Page' uses 'getStaticPaths()' inorder for 'Nextjs' to know what pages to pre-generate the Dynamic pages HTML for.  
+      
+            If a new path needs to be generated on the server after the app was deployed, inorder to prevent the user from getting a '404 page' since that path was not pre-generated.
+      
+
+         〰 If 'fallback' is set to 'false', then any requests to a certain dynamic page that was NOT pre-generated during the build process, will result in a '404' page.
+         
+         〰 If 'fallback' is set to 'true' or 'blocking', we are telling 'Nextjs' that the list of paths we are specifying might not be the full list of paths, and there might be more valid pages.
+         Therefore, when 'fallback' is set to 'true' or 'blocking', 'Nextjs' will not respond with a '404' page if it cant find the page immediatly, instead with 'fallback' is set to 'true' or 'blocking', it will then generate that page on 'demand' and thereafter 'cache' it. So it will be pre-generated when needed.
+         
+         Difference between 'fallback' set to 'true' and 'blocking' is that:
+                   -  with 'true' it would immediatly return an empty page, and then pull the dynamically generated content once its done.
+                          So we would need to handle the case where the page oes not have the data yet.
+                   - whereas with 'blocking', the user will not see anything until the page was dynamically generated, and then the finished page will be served.
+
+
+     ⭐⭐⭐  SUMMARY -->  Always set 'fallback' to 'blocking' when using 'getStaticPaths()' ⭐⭐⭐
+
+
+          // --- example
+
+                  export const getStaticPaths = async () => {
+                    // Dynamically generating Paths array
+
+                    // connect to database (returns a promise)
+                    const client = await MongoClient.connect(
+                      "mongodb+srv://mikelkamel:BaUwmVa400zhRh9R@cluster0.qss2ixr.mongodb.net/?retryWrites=true&w=majority"
+                    );
+
+                    // Get hold of the database to which we are connecting to
+                    const db = client.db();
+
+                    // Get access to our meetups collection (can have any name as an argument)
+                    const meetupsCollection = db.collection("meetupsDatabase");
+
+                    // get and convert the 'collection' fetched from Mongodb
+                    const meetups = await meetupsCollection.find().toArray();
+
+                    // create that paths array with each item id as parameter that will be used in the URL
+                    const paths = meetups.map((meetup) => {
+                      return { params: { meetupId: meetup._id.toString() } };
+                    });
+
+                    client.close();
+
+                    return {
+                      paths,
+                      fallback: "blocking",                       👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈👈
+                    };
+                  };
+
+
+
+
+
+
+
+
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+// -------------------------------------------------------------
+ / ` Animating React Apps `
+
+
+
+  - We can use CSS 'transition' and '@keyframes & animation' properties to animate components in react apps by adding and removing classes, depending on a state.
+          So the react component will always be rendered in the DOM, but just hidden or visible depending on the classes it has, 
+                which is perfectly fine since CSS animations is better in terms of performance.   'But is also have some limitations'
+
+      Some limitations of CSS 'transition' and '@keyframes & animation' properties are :
+         1. One limitation is that elements animated through CSS, are always present/rendered on the DOM, they are just hidden or visible depending on the classes they have. 
+         
+                                👆 This means that all of our HTML code is ALWAYS in the DOM, which 
+                                              〰️ populates our DOM with alot of elements which slows our page down alittle bit
+                                              〰️ might also not be best for accessibilty
+                                              〰️ and really goes against Reactjs, since we are controlling elements by CSS instead of mounting and unmounting components.                                 Which is all not that big of a deal. Especially if we are just dealing with a Modal windows or a side drawer menu.
+
+                ⭐⭐ Adding animation to an element as it is 'mounted/rendered' can be done through CSS 'transition' or 'animation' properties, but animating an element as it is 'unmounted' *CANNOT* be done with CSS, since 'React' instantly removes the element from the DOM.  
+                        The reason for this is that 'React' doesnt wait until a CSS animation is finished before removing an element, because it is NOT aware of that CSS animation. It is also good that 'React' doesnt scan our to be removed elements inorder to possibly delay their unmounting until their exit CSS animation is finished, because that would be a performance nightmare. ⭐⭐
+                        
+                     -----------
+                        SUMMARY -->   -  So annimating an element as it is mounted/rendered through CSS is easy
+                                      -  🛑 But animating an element as it is removed/unmounted from the DOM cannot be done since React doesnt wait for the CSS animation to finish before removing the element from the DOM.
+                     -----------
+                                        
+                                        
+
+  - 🟢 Inorder to animate elements as they 'unmount' we can use different tools/packages: 
+  
+        - We use 'React Transition Group' package in the course, which allows us to smoothly transition elements by delaying their 'mount' and 'unmount' states from the DOM, until their animations are finished.
+        
+        
+          〰️ We used the '<Transition>' component from 'React Transition Group' package  ->  which delays the 'mounting' and 'unmounting' of a component until a css animation is finished through CSS class or inline-styles.
+          
+          〰️ Also use the '<CSSTransition' component from 'React Transition Group' package was used  ->  'http://reactcommunity.org/react-transition-group/css-transition'
+        
+                                  👆👆👆👆 USE '<CSSTransition' component instead of '<Transition>' component ⭐⭐⭐⭐⭐
+                                  
+          〰️ ⭐⭐⭐ Used the '<TransitionGroup>' component when managing a set of transition components (<Transition> and <CSSTransition>) in a list.
+        
+                 
+                   
+          
+
+                      
+                      
+                      
+
+                                  
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+// -------------------------------------------------------------
+ / ` Replacing Redux (app-wide state management package) with built-in Context API and custom React Hooks `
+                                                                                                      
+                                                                                         
+                            ⭐ There is NOTHING WRONG with using 'React-Redux' to manage global/app-wide state ⭐
+    
+                                                                                                      
+    - We might want to not use 'React-Redux' and use built-in 'Context API' and 'custom React Hooks' instead, due to a couple of reasons
+                                                                                                      
+            1. Maybe we want to only use the tools 'React' gives us. And we dont want to learn 'Redux'  (ie: Lazy 😪)
+            
+            2. Or maybe we dont want to increase our production bundle size by adding the 'React-Redux' package. And thus we would ship less code to the browser when we deploy the app and the app would load faster.
+                      ⭐ Even tho it might not even matter if we a have a really large app ⭐
+                      
+            3. Or we might we want to simply explore how we could pass data between components without 'props drilling' and without 'Redux'
+
+
+----------------------------
+/ ` Two different approaches of managing our global/app-wide state with React ONLY tools `
+            
+            One approach is a good one 👍, and the other is not that great (atleast no for all usecases) 🤢
+            
+     --------------
+    1. 'FIRST' approach using the built-in 'Context API'    (sometimes the right choice, but NOT ALWAYS)
+
+      (see 'react-replacing-reduc-with-react-hooks' app)
+
+            🛑🛑⛔ Down-side of using 'Context API' for managing app-wide state 🛑🛑⛔ 
+               
+             〰 React 'Context API' is NOT optimized for hight frequency changes. ie: not optimitzed for states that changes every second or even multiple times/second.
+                      🌟 If we DO have a state that needs to be Global and that also changes often we can use 'REDUX'.
+                      
+             〰 'Redux' is a state solution that we generally prefer for big applications. 
+                  You could very well build a medium scale application with just 'Context API' and 'React Hooks', so you don't really need Redux for it but you can use it there too.
+
+     SUMMARY: 
+        So its best to use 'Context API' if we want to manage state that has very low frequency to be updated/changed. Like user authenication or a theme state update. 
+              This is because  whenever a state changes in our app, the 'Context API' doesnt have a clever way of figuring out which component was updates inorder to only re-render that component, instead it re-rerenders all the components wrapped inside it, along with their children, as oppose to 'Redux' which only updates subscribed components that were updated.
+        
+        Whereas if we have a Shopping Cart for instance which is a state that changes more often, then using 'Context API' is not the best option. Use 'Redux' or another package/solution instead.
+        
+
+
+     --------------
+    2. SECOND approach is creating our own 'Custom Hooks' as a Store, inorder to manage global/App-wide state
+    
+        Check 'replacing-redux-with-hooks' app    
+    
+                                                                                                      
+
+        
+        
+        
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+/ ==============================================================================================================================================================================================
+// -------------------------------------------------------------
+ / ` Testing React Apps through Automated testing `         
+                                    ------  [  'UNIT Testing'  ]  ------
+
+
+    - 'Automated testing' is about writing code, to test our code.
+              'Automated testing' is an important part of writing modern application. It is such a big topic that we can create entire courses about just testing.
+              
+    
+// -------------------------------------    
+/ --- What is 'Testing'?  ``
+
+    - 'Manual Testing' which means that we as a developer write some code to implement a feature and then we test it in the Browser.
+              Important because we see what our users will see. 
+    
+        DOWNSIDE ->  Testing the app manually is 'Error-prone' because its hard to test all possible combinations and scenarios.
+                          For instance if we add a new feature in the app, we only test that feature. We dont test everything all the time.
+                            And Since we dont test the entire app everytime we implement a new feature. That new feature might have caused bugs/breaking changes to other already existing features in the app, that we are not aware of and might result in more work later down the road. Thats where 'Automated Testing' comes in.
+    
+    - 'Automated Testing' is NOT a replacement for manual tetsing, instead it is an addition. With 'Automated testing' we write extra code that runs and tests our main app code.
+        〰 This is a standard thing to do in Modern Development. 
+        〰 The good thing about 'Automated testing', is that since we write code that tests our entire application automatically, we can always test everything no matter                      what new feature we add. 
+        〰 So we write test that tests the individual building blocks of the app, which then tests all those building blocks together. Whenever we make changes to the code, instead of only testing pARTS of our app from time to time.
+
+        👆👆 Very technical, but allows us to test everything ALL the time.
+
+
+    Summary --> 'Manual Testing' combined with 'Automatic Testing' allows us to catch bug way earlier and allows us to write and ship better code and applications.
+  
+  
+// -------------------------------------
+/ --- Different types of 'Automated Testing'?
+  
+    There are three main categories of 'Automated Testing'  ->  'Unit Tests', 'Integration Tests', 'End-to-End (e2e) tests'
+  
+   - 'Unit Tests' : 
+              〰 are all about writing tests for individual components/functions, in isolation.    So apps ussually contains ALOT of unit Test. 
+              〰 ⭐ This is the most common and important kind of test ⭐
+              〰 The idea behind is that if we test each of the individual units by themselves, the overall of the application will also work.
+
+              
+   - 'Integration Tests' :
+              〰 Lets us verify that all the individual components/units work together, where we test the combination of multiple building blocks of the app, 
+                  like multiple components working together.
+              〰 Apps ussually contain a couple of Integration tests.
+              〰 It is not always easy to differentiate between 'Unit tests' and 'Integration tests' when testing React apps, since very often we want to test a component                     that also uses some other component.
+              
+              ⭐ Also important, but focus on 'Unit Tests' in most cases ⭐
+              
+              
+   - 'End-to-End (e2e) tests' :
+              〰 End-to-End (e2e) tests are all about testing ENTIRE workflows. 
+              〰 Tests entire scenarios in your app as the user would experience them. 
+                    Like logging a user in and then going to a different page.
+              〰 So 'End-to-End (e2e) tests' is basically what we would do with 'manual tetsing', but automated
+              〰 ⭐ We dont write as much 'End-to-End (e2e) tests' as we write 'Unit tests' and 'Integration tests', because if our 'Unit tests' and 'Integration tests' pass sucessfully, then we can be pretty sure that                          our overall application works fine. 
+                  And also because 'Unit tests' and 'Integration tests' are simply easier to test, quicker to run, and more focused.  
+                    (Way easier to test all possible scenarios of individual components if we run 'Unit tests', than it is to test all possible scenarios of the entire app with 'End-to-End (e2e) tests') ⭐ 
+
+                  
+                  
+                                ***** In the course we only focus on 'Unit tests' and 'Integration Tests' *****
+                                  
+                                  
+ ``         
+// ------------------------------------- 
+/ --- What to Test?
+  
+    - For 'Unit Testing', we want to test the different building blocks that make up the application. 
+                            We want to test SMALL building blocks, so that we have small focused test that only test 'ONE main' thing EACH.
+
+          So that we would have ALOT of small tests that each could fail for a clear reason, rather than have a few large test that could fail for all kinds of reasons.
+
+
+
+/ --- How to Test?
+  
+    - We want to test 'success' and 'error' cases. Also test rare (but possible) cases.
+    
+   
+    
+    
+// ------------------------------------- 
+/ --- Required 'Tools' & 'Setup' for testing code? 
+  
+    - Inorder to write and execute tests, we need:
+
+                                        〰 A tool for running our test and asserting the results (for determining whther a result can be seen as a 'success' or 'fail') 
+                                                 'Package'  ->  We typically use 'Jest' package as a tool to run and assert tests in our app.
+  
+                                        〰 In our React apps, we also need a tool for 'simulating' (rendering) our React app/components, inorder for those automated test to then interact with.
+                                                 'Package'  ->  For simulating and rendering our app/components for tests, we typically use the 'React Testing Library' 
+
+
+                     ********  Both 'Jest' and 'React Testing Library' packages are already installed and set up for us when we create a project using 'create-react-app'  ********
+              
